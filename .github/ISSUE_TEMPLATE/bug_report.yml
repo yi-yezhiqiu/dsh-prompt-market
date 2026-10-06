@@ -1,0 +1,92 @@
+name: 🐛 缺陷报告
+description: 报告一个可复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请尽量填完整 —— 「不工作」这类描述无法处理。
+
+  - type: input
+    id: dsh-version
+    attributes:
+      label: DSH 版本
+      placeholder: 例如 0.2.0-rc.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: 出现在哪个页签
+      options:
+        - 市场
+        - 收藏
+        - 我的
+        - 源管理
+        - 按钮 / 面板本身（打不开、看不见）
+        - 其他 / 不确定
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 点输入框左侧「提示词导入」
+        2. 在「市场」页签搜索「写作」
+        3. 点某一条的「插入」
+        4. ……
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      description: 有报错请贴原文；界面异常建议附图
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: 涉及哪个源
+      options:
+        - 内置：f/prompts.chat
+        - 内置：rockbenben/ChatGPT-Shortcut
+        - 内置：PlexPt/awesome-chatgpt-prompts-zh
+        - 自定义源
+        - 与具体源无关
+    validations:
+      required: true
+
+  - type: textarea
+    id: source-json
+    attributes:
+      label: 自定义源的 JSON 结构
+      description: 仅在使用自定义源时填写。只需**键名结构**，不必贴内容。
+      render: json
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已排除「内容过滤误伤」（源管理页能看到过滤计数）
+          required: false
+        - label: 我已试过重启 DSH，问题仍然存在
+          required: false
+        - label: 我已在 README 的「已知限制」里找过，这不是已知问题
+          required: false

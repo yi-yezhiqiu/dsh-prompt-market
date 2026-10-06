@@ -1,0 +1,13 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 安装与使用说明
+    url: https://github.com/yi-yezhiqiu/dsh-prompt-market#安装
+    about: 安装、配置、数据与隐私、常见问题，先看这里
+
+  - name: 🟨 「未实测」清单
+    url: https://github.com/yi-yezhiqiu/dsh-prompt-market#状态与已知限制
+    about: 想帮忙但不知道做什么？补齐这些场景的实测结果最有价值
+
+  - name: 🧩 添加自己的提示词源
+    url: https://github.com/yi-yezhiqiu/dsh-prompt-market#添加自定义源
+    about: 不用改代码，填一个 JSON 地址就能加源

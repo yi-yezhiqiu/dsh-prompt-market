@@ -1,0 +1,53 @@
+name: 💡 功能建议
+description: 提出一个新功能或改进
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        建议先看一眼 [路线图](https://github.com/yi-yezhiqiu/dsh-prompt-market#路线图)，
+        避免与已计划的重复。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决什么问题？
+      description: 请描述**场景与痛点**，而不是直接给方案。这样更容易找到更好的解法。
+      placeholder: 例如：我经常需要给同一段文字套不同的提示词，每次都要重新插入一遍……
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 你设想的做法（可选）
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 涉及哪一块
+      options:
+        - 市场 / 搜索 / 筛选
+        - 收藏
+        - 我的（自建与编辑）
+        - 源管理 / 自定义源
+        - 内容过滤
+        - 写入行为
+        - 界面与交互
+        - 文档
+        - 其他
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 这个需求不需要服务端（本插件坚持零后端）
+          required: false
+        - label: 我理解路线图是计划而非承诺
+          required: false

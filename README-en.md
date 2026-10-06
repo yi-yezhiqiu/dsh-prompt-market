@@ -172,7 +172,20 @@ flowchart TD
 - The DeepSeek Harness desktop app
 - The plugin **needs no Node at runtime** (Node is only required for the development self-checks)
 
-### Option 1: Install straight from GitHub (recommended — no clone needed)
+### Option 1: No git required (recommended)
+
+Install the pre-packed file from the release:
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+```
+
+You can paste **that URL** into DSH's **Settings → Plugins → Add plugin** dialog instead.
+
+> ✅ **This path does not need `git`.** It downloads a release asset directly — measured at ~2 seconds.
+> **If `git` is not installed on your machine, use this one.**
+
+### Option 2: Install from the GitHub repository (requires git)
 
 ```cmd
 dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
@@ -184,15 +197,19 @@ The repository URL works too:
 dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
 ```
 
-Or paste either one into DSH's **Settings → Plugins → Add plugin** dialog.
-All three forms are accepted there: an npm package name, a GitHub URL, or a local directory path.
+> ⚠️ **Both forms require `git` to be installed** — pnpm shells out to it to fetch the repository.
+> Without it you get:
+>
+> ```
+> [ERROR] Command failed with exit code 1: git ls-remote "https://github.com/..."
+> 'git' is not recognized as an internal or external command
+> ```
+>
+> **If you hit that, use Option 1**, or install git first (`winget install Git.Git`).
 
-> The first install needs network access and `git`.
-> Afterwards, **quit DSH completely and open it again**.
+### Option 3: Install from a local directory
 
-### Option 2: Install from a local directory
-
-Clone first, then install that directory:
+Clone first (or download and unzip the repository), then install that directory:
 
 ```cmd
 git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
@@ -205,7 +222,7 @@ If `dsh` isn't on your PATH, use the shim inside the DSH installation directory:
 "<DSH install dir>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<directory>"
 ```
 
-### Option 3: Symlink (developers)
+### Option 4: Symlink (developers)
 
 ```cmd
 mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<repository path>"

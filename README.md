@@ -172,25 +172,44 @@ flowchart TD
 - DeepSeek Harness 桌面端
 - 插件**运行时不依赖 Node**（Node 只在跑开发自检时需要）
 
-### 方式一：直接从 GitHub 安装（推荐，无需克隆）
+### 方式一：不用 git（推荐）
+
+直接装发布包里打好的文件：
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+```
+
+也可以把**这个网址**填进 DSH 的**设置 → 插件 → 添加插件**对话框。
+
+> ✅ **这条不需要 `git`。** 它直接下载 Release 附件，实测 2 秒装完。
+> **如果你机器上没装 git，就用这条。**
+
+### 方式二：从 GitHub 仓库安装（需要 git）
 
 ```cmd
 dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 ```
 
-也可以直接用仓库地址：
+仓库地址写法同样可用：
 
 ```cmd
 dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
 ```
 
-或者把它填进 DSH 的**设置 → 插件 → 添加插件**对话框（三种写法都接受：npm 包名 / GitHub 地址 / 本地目录路径）。
+> ⚠️ **这两种写法都要求本机已安装 `git`** —— pnpm 要靠它拉取仓库。
+> 没装的话会失败，报错形如：
+>
+> ```
+> [ERROR] Command failed with exit code 1: git ls-remote "https://github.com/..."
+> 'git' 不是内部或外部命令，也不是可运行的程序或批处理文件。
+> ```
+>
+> **遇到这个就用「方式一」**，或者先装 git（`winget install Git.Git`）。
 
-> 首次安装需要网络与 `git`。装完**完全退出并重新打开** DSH。
+### 方式三：本地目录安装
 
-### 方式二：本地目录安装
-
-先在本地克隆，再安装那个目录：
+先在本地克隆（或直接下载仓库 ZIP 解压），再安装那个目录：
 
 ```cmd
 git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
@@ -203,7 +222,7 @@ dsh plugin --profile desktop add "<刚克隆出来的目录>"
 "<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<目录>"
 ```
 
-### 方式三：软链接（开发者）
+### 方式四：软链接（开发者）
 
 ```cmd
 mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"

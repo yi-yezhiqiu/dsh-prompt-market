@@ -171,7 +171,20 @@ flowchart TD
 - DeepSeek Harness デスクトップ版
 - プラグインの**実行時に Node は不要**（Node が必要になるのは開発用セルフチェックを回すときだけです）
 
-### 方法 1：GitHub から直接インストール（推奨・クローン不要）
+### 方法 1：git 不要（推奨）
+
+リリースに添付した梱包済みファイルを直接インストールします：
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+```
+
+**この URL** を DSH の**設定 → プラグイン → プラグインを追加**ダイアログに貼り付けてもかまいません。
+
+> ✅ **この方法に `git` は不要です。** リリース添付ファイルを直接ダウンロードします（実測 約 2 秒）。
+> **お使いの環境に git が入っていない場合はこちらを使ってください。**
+
+### 方法 2：GitHub リポジトリからインストール（git が必要）
 
 ```cmd
 dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
@@ -183,15 +196,19 @@ dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
 ```
 
-DSH の**設定 → プラグイン → プラグインを追加**ダイアログに貼り付けてもかまいません。
-このダイアログは 3 つの形式（npm パッケージ名 / GitHub の URL / ローカルディレクトリのパス）を受け付けます。
+> ⚠️ **どちらの書き方も `git` のインストールが前提です** —— pnpm が git を呼び出してリポジトリを取得するためです。
+> 入っていないと次のように失敗します：
+>
+> ```
+> [ERROR] Command failed with exit code 1: git ls-remote "https://github.com/..."
+> 'git' は、内部コマンドまたは外部コマンド、操作可能なプログラムまたはバッチ ファイルとして認識されていません。
+> ```
+>
+> **このエラーが出たら「方法 1」を使ってください。** あるいは先に git を導入してください（`winget install Git.Git`）。
 
-> 初回のインストールにはネットワークと `git` が必要です。
-> インストール後は **DSH を完全に終了し、開き直してください**。
+### 方法 3：ローカルディレクトリからインストール
 
-### 方法 2：ローカルディレクトリからインストール
-
-先にクローンしてから、そのディレクトリを指定してインストールします：
+先にクローン（またはリポジトリの ZIP をダウンロードして展開）し、そのディレクトリを指定します：
 
 ```cmd
 git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
@@ -204,7 +221,7 @@ dsh plugin --profile desktop add "<クローンしたディレクトリ>"
 "<DSH のインストール先>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<ディレクトリ>"
 ```
 
-### 方法 3：シンボリックリンク（開発者向け）
+### 方法 4：シンボリックリンク（開発者向け）
 
 ```cmd
 mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<リポジトリのパス>"

@@ -412,16 +412,19 @@ LICENSE                      MIT
 ## 開発とセルフチェック
 
 ```cmd
-:: 语法检查（覆盖 plugin 下全部 .js）
-node diag-syntax.js
+:: 構文チェック（リポジトリ内の全 .js。組み立て用の断片は自動的に除外されます）
+node check-syntax.js
 
-:: 权威判据：装配区段 ↔ browser.js 单元区段，逐行一致
+:: 権威ある判定基準：組み立て後の区間 ↔ browser.js のユニット区間を 1 行ずつ比較
 node core/build-client-bundle.js --check
 
-:: 数据层自检（真跑算法）
+:: データ層のセルフテスト（実際にアルゴリズムを走らせます）
 node core/selftest-node.js
 
-:: 界面静态自检
+:: データ層の静的セルフテスト（JS ランタイム不要の構造アサーション）
+powershell -NoProfile -ExecutionPolicy Bypass -File core/check-data-layer.ps1
+
+:: 画面の静的セルフテスト
 powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
 ```
 

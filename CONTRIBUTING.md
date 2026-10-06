@@ -43,7 +43,7 @@ mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
 ### 自检
 
 ```cmd
-node diag-syntax.js                                    :: 全部 .js 语法
+node check-syntax.js                            :: 全部 .js 语法（自动跳过拼装片段）
 node core/build-client-bundle.js --check        :: 装配区段一致性（权威判据）
 node core/selftest-node.js                      :: 数据层算法自检
 powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1

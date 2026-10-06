@@ -411,14 +411,17 @@ LICENSE                      MIT
 ## 开发与自检
 
 ```cmd
-:: 语法检查（覆盖 plugin 下全部 .js）
-node diag-syntax.js
+:: 语法检查（全仓库 .js；自动跳过 core/.browser-parts 的两个拼装片段）
+node check-syntax.js
 
 :: 权威判据：装配区段 ↔ browser.js 单元区段，逐行一致
 node core/build-client-bundle.js --check
 
 :: 数据层自检（真跑算法）
 node core/selftest-node.js
+
+:: 数据层静态自检（无需 JS 运行时的结构断言）
+powershell -NoProfile -ExecutionPolicy Bypass -File core/check-data-layer.ps1
 
 :: 界面静态自检
 powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1

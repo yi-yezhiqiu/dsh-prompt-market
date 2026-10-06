@@ -411,16 +411,19 @@ The UI code is hand-written in the `window.__ModuleLoader__.load({ id, factory }
 ## Development & Self-checks
 
 ```cmd
-:: 语法检查（覆盖 plugin 下全部 .js）
-node diag-syntax.js
+:: syntax check (every .js in the repo; assembly fragments are skipped automatically)
+node check-syntax.js
 
-:: 权威判据：装配区段 ↔ browser.js 单元区段，逐行一致
+:: authoritative criterion: assembled region vs. browser.js unit regions, line by line
 node core/build-client-bundle.js --check
 
-:: 数据层自检（真跑算法）
+:: data-layer self-test (runs the real algorithms)
 node core/selftest-node.js
 
-:: 界面静态自检
+:: data-layer static self-test (structural assertions, no JS runtime needed)
+powershell -NoProfile -ExecutionPolicy Bypass -File core/check-data-layer.ps1
+
+:: UI static self-test
 powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
 ```
 

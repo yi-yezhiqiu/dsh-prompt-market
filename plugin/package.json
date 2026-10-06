@@ -1,0 +1,37 @@
+{
+  "name": "dsh-prompt-market",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "提示词市场（Prompt Market）— DeepSeek Harness 桌面端插件：输入框旁「提示词导入」按钮 + 浮层市场面板；零后端、纯 JavaScript、无编译步骤。",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "prompt-market",
+    "prompts"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  }
+}

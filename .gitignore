@@ -1,0 +1,33 @@
+# ---------------------------------------------------------------------------
+# dsh-prompt-market / .gitignore
+#
+# NOTE: plugin/client.js IS intentionally committed.
+#   This plugin has NO build step — the assembled browser half is the shipped
+#   artifact (the same convention third-party DSH plugins follow). Do not add
+#   it here.
+# ---------------------------------------------------------------------------
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (the plugin needs no dependencies at runtime; these cover local tooling)
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# Generated packaging output
+dist/
+
+# Local scratch
+scratch/
+tmp/
+*.local

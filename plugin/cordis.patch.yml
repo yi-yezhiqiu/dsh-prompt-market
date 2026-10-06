@@ -1,0 +1,12 @@
+# dsh-prompt-market bundle patch（profile 层）。
+#
+# 一行 insert 即把本包挂成 profile 的一个组合层；浏览器半身由 package.json 的
+# dsh.client 声明，并且只绑定在「name 为裸包名」的这一行上（子路径行不携带半身）。
+# 依据：同类第三方插件（如 dsh-our-free-model）的 cordis.patch.yml 采用的「一行 insert」写法
+#
+# 每一行都必须是能被 Loader 解析的条目：name 是 Node 可解析的包名，必须与
+# package.json 的 `name` 一致。@ 开头的包名在 YAML 里必须加引号。
+- insert:
+    - id: prompt-market
+      name: 'dsh-prompt-market'
+      config: {}

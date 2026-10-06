@@ -1,0 +1,132 @@
+# plugin/core 交付物清单与行数台账（datasmith；t3 建立，t17 订正，t21 刷新，**t29 按磁盘实测再刷新**）
+
+行数与行号均由 `read` / `grep` 工具在真实文件上回读得到（非估算）。
+**用途**：t-integrate 核对交付物完整性；verifier 复核「未改动 t1/t2 文件」与逐单元一致性。
+
+## 1. 浏览器半身 `plugin/core/browser.js` 的 9 个单元
+
+标记形态：每个单元一对 `BEGIN inlined file: <name>` / `END inlined file: <name>`（顶格，行首无空白）。
+下表「单元体行数」= END 行号 − BEGIN 行号 − 1。
+
+| # | 单元名 | BEGIN 行 | END 行 | 单元体行数 | 对应核心文件 | 核心文件行数 |
+|---|---|---|---|---|---|---|
+| 1 | `constants.js` | 52 | 535 | 482 | `constants.js` | 501 |
+| 2 | `text.js` | 537 | 898 | 360 | `text.js` | 367 |
+| 3 | `filter.js` | 900 | 1213 | 312 | `filter.js` | 319 |
+| 4 | `storage.js` | 1215 | 2174 | 958 | `storage.js` | 945 |
+| 5 | `normalize.js` | 2176 | 2793 | 616 | `normalize.js` | 633 |
+| 6 | `net.js` | 2795 | 3274 | 478 | `net.js` | 480 |
+| 7 | `sources.js` | 3276 | 3726 | 449 | `sources.js` | 458 |
+| 8 | `api.js` | 3728 | 4770 | 1041 | `api.js` | 1051 |
+| 9 | `bootstrap` | 4772 | 4886 | 113 | （无对应核心文件，只在 `browser.js` 内） | — |
+
+`browser.js` 全文件：**4891 行**（`bootstrap` 的 END 在 4886，其后 4887–4891 为 5 个空行）。
+
+> **台账刷新（t29，按磁盘实测再刷新；对应评审 L3 / integrator 的 F-D）**
+> —— **消除「三数不一致」**：本台账曾出现过三个不同的 `browser.js` 行数：
+>
+> | 记录 | 数值 | 来源/时点 |
+> |---|---|---|
+> | ① | **4843** | t3 初版（当时 `bootstrap` END 就在 4843） |
+> | ② | **4852** | t21 实测（t13 改 `writeField` 默认值、t17 改注释与单元说明文字后） |
+> | ③ | **4876** | `REVIEW-01 §15.4 L3` 报的实测值（t22 修 `stripTags`、t23 拆分许可条目后） |
+> | ④ | **4891** | integrator 在 t9 实测，**本次 t29 独立复测一致**（t27 改 `notice()` 后） |
+>
+> **④ 才是当前磁盘真值**。四者依次递增，正是 t13→t17→t22→t23→t27 多轮改动的**累积结果**；
+> 它们各自在其时点都是真值，**不是互相矛盾的错误**，而是台账刷新滞后于代码演进。
+> **实测方式**：`grep -n "inlined file:" plugin/core/browser.js`（得 9 对标记的起止行）+ 逐个 `read`
+> 确认文件尾（`:4884` 为 bootstrap 的 IIFE 收尾、`:4886` 为 `END inlined file: bootstrap`、
+> `:4887–4891` 为 5 个空行，文件共 **4891 行**）。上表各行号均来自该次实测，**非估算**。
+>
+> 本次相对 ②(4852) 的漂移集中在后半段：`storage` 单元 END 2150→**2174**、
+> 其后 `normalize`/`net`/`sources`/`api`/`bootstrap` 各后移；`api` 单元体 1026→**1041**
+> （t27 改 `notice()` 所致），核心 `api.js` 亦 1036→**1051**。
+> 前三个单元（`constants`/`text`/`filter`）自 t21 起**未再漂移**。
+
+### 1.1 单元体与核心文件的关系（**t17 订正：此前表述说过头了**）
+
+⚠️ **订正说明**：本文件 t3 版曾写「每个单元体 = 对应核心文件的**逐字节原文**」。
+**实测证明该表述过头**：单元体是**精简重写版**，不是逐字节原文。准确的描述是：
+
+- **说明头被替换**：核心文件的 `plugin/core/<name>.js` 头注释，在 `browser.js` 里换成了更短的
+  `unit: <name>` 单元说明头 ⇒ 单元体行数普遍**少于**核心文件。
+- **个别写法更紧凑**：例如 `storage` 单元的缓存写入循环与 `buildExport` 的 `text.nowIso()`
+  （语义等价、非逐字）；`api` 单元的注释亦有精简。
+- 因此「browser.js ↔ 核心文件**逐行 diff**」**必然误报**，不得用作判据。
+- 另注：`constants.js` 在 t3 之后有新变更（t13 改默认 `writeField`、t17 修正被阻断域名注释、
+  t23 拆分 `MIT-plexpt` 许可条目），而 `browser.js` 的内联副本**已由 t23 同步**
+  （`MIT-plexpt` 在 `constants.js` 与 `browser.js` 中同时存在，见 `docs/VERIFY-03-装配前复核.md` §3）。
+  行号不再互指（本文件不再写「`browser.js:NNNN`」这类易失效引用）——**判据见 1.2，不靠行号对照**。
+
+### 1.2 权威一致性判据（**唯一，保留并强化**）
+
+> **一致性 = `plugin/client.js` 的 `PM-CORE-INLINE` 区段 ↔ `plugin/core/browser.js` 的单元区段，
+> 逐行一致（忽略行首缩进与空行）。**
+
+- `plugin/core/build-client-bundle.js --check` 实现的正是该判据（先取区段→再取单元区段→逐行归一化比较）；
+- `plugin/ui/check-ui.ps1` 的 **A13** 同样按「区段对区段」比较；
+- **不得**改用「`client.js` 或 `browser.js` 与 `plugin/core/*.js` 逐行比对」——那会因为上述
+  精简重写（以及 t17 的注释漂移）而误报失败；
+- **同样不得**改用「`client.js` 整文件 ↔ `browser.js` 整文件」比较：前者是装配产物（含壳层与 UI
+  内联区），两者长度本就无关；**只比对区段内内容**。
+- 判据的**输入两侧都是被冻结/受保护的**：`browser.js`（t29 **未改动**，仍 4891 行）与已绑定指纹的
+  `client.js`（6796 行 / 32–4870）。⇒ **本任务（纯台账刷新）不会使该判据失效**。
+
+## 2. 其余交付物
+
+| 文件 | 行数 | 说明 |
+|---|---|---|
+| `plugin/core/constants.js` | 501 | 核心：真值（t17 修正被阻断域名的判据注释） |
+| `plugin/core/text.js` | 367 | 核心：纯文本化 |
+| `plugin/core/filter.js` | 319 | 核心：内容过滤 |
+| `plugin/core/storage.js` | 945 | 核心：持久化（含 writeMode 限定式说明与迁移护栏） |
+| `plugin/core/normalize.js` | 633 | 核心：CSV + 四适配器 |
+| `plugin/core/net.js` | 480 | 核心：抓取与降级 |
+| `plugin/core/sources.js` | 458 | 核心：源注册表与单源管线 |
+| `plugin/core/api.js` | 1051 | 核心：门面（t27 改 `notice()` 后由 1036 → 1051） |
+| `plugin/core/index.js` | 205 | ESM 加载入口（沙箱求值） |
+| `plugin/core/node-reader.js` | 45 | 仅 Node：读核心源码 |
+| `plugin/core/browser.js` | **4891** | 浏览器半身成品（9 单元，免构建可内联；**t29 实测刷新**） |
+| `plugin/core/selftest-node.js` | 1024 | 【可选】Node 自检（断言**未实测**；t26 第二轮分诊后行数） |
+| `plugin/core/assemble-browser.js` | ~236 | 【可选】拼装/校验 browser.js |
+| `plugin/core/build-client-bundle.js` | 209 | 【可选·只读】校验 client.js 内联区 |
+| `plugin/core/check-data-layer.ps1` | 503 | 无需 JS 运行时的静态自检（**命令未实测**） |
+| `plugin/core/README.md` | — | 一分钟上手 |
+| `docs/DATA-01-数据层接口.md` | — | 对外接口契约（默认值/判据已在 t17 与代码对齐） |
+
+## 2.1 装配产物 `plugin/client.js` 的**已绑定指纹**（**属产物，不由本节维护行号**）
+
+⚠️ `plugin/client.js` **不是源文件，而是装配产物**：它由 `plugin/ui/80-client-shell.js` 模板把
+`browser.js` 的 9 个单元体（→ `PM-CORE-INLINE` 区）与 8 个 UI 单元（→ `PM-UI-INLINE` 区）内联而成。
+**它的行数与区段行号由装配过程决定**，因此：
+- **不得**手工同步 `client.js`；**不得**把它与 `browser.js` 做「整文件行数」比较
+  （两者长度并不相等、也无相等义务 —— 当前 6796 vs 4891 是巧合级的接近，**没有对应关系**）；
+- 产物**已冻结**（评审通过后不再改动）：任何改动都会让下表指纹与既有验证记录失效。
+
+| 指纹项 | 实测值（t29 用 `grep`/`read` 复核） |
+|---|---|
+| 总行数 | **6796** 行（`:6795` 为 `})`、文件尾） |
+| `PM-CORE-INLINE` 区 | **32 – 4870**（`:32` = `/* PM-CORE-INLINE:BEGIN */`，`:4870` = `/* PM-CORE-INLINE:END */`；`:33` 起即 `BEGIN inlined file: constants.js`） |
+| `PM-UI-INLINE` 区 | **4872 – 6789**（`:4872` = `/* PM-UI-INLINE:BEGIN */`，`:6789` = `/* PM-UI-INLINE:END */`） |
+| 字节数 | **267728**（评审/integrator 报；本任务未复核字节数，**未实测**） |
+
+> **绑定来源**：该指纹已由 **`REVIEW-01 §15`（评审 pass）** 与 **`USER-ACCEPT-02 §0.3`（用户运行期观察）**
+> 绑定；本台账仅**记录**它，不主张重新测量或改动产物。
+
+## 3. 安装包边界
+
+`plugin/package.json` 的 `files` 白名单只有四项：`index.js`、`client.js`、`cordis.patch.yml`、`README.md`。
+`plugin/core/**` 不在白名单内 —— 浏览器侧使用数据层的唯一方式是**内联进 `client.js`**，
+因此本目录是「源码 + 可读参考」，不进安装包，也天然满足 t-integrate 验收④「交付目录无缓存与调试残留」。
+
+## 4. 已知待收口项（诚实登记，t17 记录）
+
+| 项 | 现状 | 收口归属 |
+|---|---|---|
+| `plugin/core/check-data-layer.ps1` 的 `hardrule:*:no-raw-domain` 断言 | 仍按**旧口径**「文件全文不含该域名字面量」判定 ⇒ 对现在含警告注释/夹具字面量的文件会**误报 FAIL** | 待收口（该脚本不在 t17 的 inScope）：由 t9 交付阶段按 §11.3 的新判据统一，或另开小任务 |
+| ~~`plugin/core/constants.js` 与 `browser.js` 内联单元的注释差异~~ | **已收敛**：t23 已把 `MIT-plexpt` 等改动同步进 `browser.js` 内联副本（`docs/VERIFY-03-装配前复核.md` §3） | ✅ 已闭（t29 复核） |
+| **台账行号漂移（L3）** | 本文件曾同时出现 4843 / 4852 / 4876 / 4891 四个 `browser.js` 行数（各有其时点真值）。**t29 已按磁盘实测统一为 4891 并保留过程记录**（见 §1 的刷新说明） | ✅ 已闭（t29） |
+| 本文件名以 `.` 开头 | 不会被任何 glob 或自检脚本当作源码/产物处理 | — |
+
+注：`browser.js`、`selftest-node.js`、`assemble-browser.js`、`build-client-bundle.js` 均无
+Node 专有全局依赖以外的副作用（`browser.js` 完全不含 Node 全局）。

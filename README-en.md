@@ -490,6 +490,23 @@ Package installability (`pack.ps1` / `verify-package.ps1` exit code 0) · All st
 > That last item was **cross-checked along two independent paths**: the data layer run on the Node side (`verify-sources.js`),
 > and the counts the real UI displayed — the two match exactly.
 
+#### 📦 Installation path: verified on a **third party's machine** (not the maintainer's self-test)
+
+| | |
+|---|---|
+| Verified by | **Another user** (not the maintainer) |
+| Machine | A **different machine and a different DSH data directory** |
+| Method | **Option 1: the release asset** (that machine had **no `git` installed**) |
+| Result | ✅ **Installed successfully** |
+
+> This item sat in "not runtime-verified" for a long time, and it exposed **two real defects** —
+> **both found only because someone else tried it**:
+>
+> 1. In `v0.1.0` the package root lived under `plugin/`, so installing **from the repository URL failed**.
+> 2. The docs said "requires `git`" but **never offered a way around it**, shutting out anyone without git.
+>
+> **The maintainer's own machine passing ≠ other people being able to install it.** This note stays here to remind whoever comes next.
+
 ### 🟨 Not runtime-verified (design is sound, but there is no runtime evidence)
 
 Offline fallback · Bookmarks and custom prompts persisting across restarts · Content filtering actually firing on real Chinese entries at runtime ·

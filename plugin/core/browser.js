@@ -41,8 +41,10 @@
  *
  *   各单元的行数（供 `docs/check-ui.ps1` 逐单元核对）登记在
  *   `plugin/core/.linecount.txt`，**不在本文件里重复写数字**（避免两处数字漂移）。
- *   文件内另有 `BEGIN inlined file: <name>` 与 `END inlined file: <name>` 成对标记，
- *   与上表一一对应，供静态脚本做逐区一致性比对（`docs/check-ui.ps1` 用）。
+ *   文件内每个单元都被一对「inlined file」标记包裹，与上表一一对应，
+ *   供静态脚本做逐区一致性比对（`docs/check-ui.ps1` 用）。
+ *   （此处**故意不写出标记的完整字面量**：朴素子串匹配的脚本会把说明文字误当成
+ *     一个真实单元标记，导致区段提取错位。）
  *
  * 怎么读它（Host / Node 侧也可用，纯脚本形态）
  *     const src = await readFile('plugin/core/browser.js', 'utf8')

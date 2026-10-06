@@ -62,7 +62,7 @@ function sliceBetween(source, from, to) {
   return source.slice(a + from.length, b);
 }
 
-/** 取「首 BEGIN inlined file: → 末 END inlined file:」整段（含标记及其收尾 `*/`）。 */
+/** 取「首 BEGIN inlined file: → 末 END inlined file:」整段（含标记及其收尾的星号斜杠）。 */
 function unitRegion(source) {
   const a = source.indexOf(UNIT_BEGIN);
   if (a < 0) return null;

@@ -10,17 +10,31 @@
 
 | # | 单元名 | BEGIN 行 | END 行 | 单元体行数 | 对应核心文件 | 核心文件行数 |
 |---|---|---|---|---|---|---|
-| 1 | `constants.js` | 52 | 535 | 482 | `constants.js` | 501 |
-| 2 | `text.js` | 537 | 898 | 360 | `text.js` | 367 |
-| 3 | `filter.js` | 900 | 1213 | 312 | `filter.js` | 319 |
-| 4 | `storage.js` | 1215 | 2174 | 958 | `storage.js` | 945 |
-| 5 | `normalize.js` | 2176 | 2793 | 616 | `normalize.js` | 633 |
-| 6 | `net.js` | 2795 | 3274 | 478 | `net.js` | 480 |
-| 7 | `sources.js` | 3276 | 3726 | 449 | `sources.js` | 458 |
-| 8 | `api.js` | 3728 | 4770 | 1041 | `api.js` | 1051 |
-| 9 | `bootstrap` | 4772 | 4886 | 113 | （无对应核心文件，只在 `browser.js` 内） | — |
+| 1 | `constants.js` | 54 | 559 | 504 | `constants.js` | 524 |
+| 2 | `text.js` | 561 | 924 | 362 | `text.js` | 370 |
+| 3 | `filter.js` | 926 | 1239 | 312 | `filter.js` | 320 |
+| 4 | `storage.js` | 1241 | 2176 | 934 | `storage.js` | 946 |
+| 5 | `normalize.js` | 2178 | 2795 | 616 | `normalize.js` | 634 |
+| 6 | `net.js` | 2797 | 3276 | 478 | `net.js` | 481 |
+| 7 | `sources.js` | 3278 | 3728 | 449 | `sources.js` | 459 |
+| 8 | `api.js` | 3730 | 4772 | 1041 | `api.js` | 1052 |
+| 9 | `bootstrap` | 4774 | 4888 | 113 | （无对应核心文件，只在 `browser.js` 内） | — |
 
-`browser.js` 全文件：**4891 行**（`bootstrap` 的 END 在 4886，其后 4887–4891 为 5 个空行）。
+`browser.js` 全文件：**4894 行**（`bootstrap` 的 END 在 4888，其后 4889–4894 为 6 个空行）。
+
+> **台账刷新（第七次，装配后实测）**：上表与「核心文件行数」列均由脚本**实测重算**，
+> 实测方式 = 用**锚定行首**的正则 `^/\* (BEGIN|END) inlined file: ?(.*?) \*/$` 逐行扫描
+> `browser.js`（**不接受朴素子串匹配**——见下方 ⚠️），再对每个核心文件 `read` 取总行数。
+>
+> 本次实测相对上一版台账**修正了多处偏差**（此前多行数字不准确）：
+> `constants` 501→**524**、`text` 367→**370**、`filter` 319→**320**、`storage` 945→**946**、
+> `normalize` 633→**634**、`net` 480→**481**、`sources` 458→**459**、`api` 1051→**1052**；
+> 单元体 `storage` 958→**934** 亦为实测更正。`assemble-browser.js` 的 `~236`→**313**（估算值纠正为实测值）。
+>
+> ⚠️ **为什么必须锚定行首**：`browser.js` 的文件头注释里**曾**写出标记的完整字面量作为说明文字，
+> 而朴素 `indexOf` 匹配会把它**误当成第一个单元标记**，导致区段提取错位
+> （`build-client-bundle.js --check` 与 `check-ui.ps1` A2 都曾因此误报）。
+> 现已把该说明文字改成不含完整字面量的写法，并在此记录：**任何匹配标记的代码都必须锚定行首**。
 
 > **台账刷新（t29，按磁盘实测再刷新；对应评审 L3 / integrator 的 F-D）**
 > —— **消除「三数不一致」**：本台账曾出现过三个不同的 `browser.js` 行数：
@@ -69,27 +83,28 @@
   精简重写（以及 t17 的注释漂移）而误报失败；
 - **同样不得**改用「`client.js` 整文件 ↔ `browser.js` 整文件」比较：前者是装配产物（含壳层与 UI
   内联区），两者长度本就无关；**只比对区段内内容**。
-- 判据的**输入两侧都是被冻结/受保护的**：`browser.js`（t29 **未改动**，仍 4891 行）与已绑定指纹的
-  `client.js`（6796 行 / 32–4870）。⇒ **本任务（纯台账刷新）不会使该判据失效**。
+- 判据的**输入两侧都是被冻结/受保护的**：`browser.js`（文件头注释修正后为 **4894 行**，**单元区段内容未变**）
+  与已绑定指纹的 `client.js`（**6796 行 / 267728 字符 / 294237 字节 / sha256 `7CA1D1A6…`**，
+  文件头注释修正后实测 sha256 **未变**）⇒ **本次刷新不会使该判据失效**。
 
 ## 2. 其余交付物
 
 | 文件 | 行数 | 说明 |
 |---|---|---|
-| `plugin/core/constants.js` | 501 | 核心：真值（t17 修正被阻断域名的判据注释） |
-| `plugin/core/text.js` | 367 | 核心：纯文本化 |
-| `plugin/core/filter.js` | 319 | 核心：内容过滤 |
-| `plugin/core/storage.js` | 945 | 核心：持久化（含 writeMode 限定式说明与迁移护栏） |
-| `plugin/core/normalize.js` | 633 | 核心：CSV + 四适配器 |
-| `plugin/core/net.js` | 480 | 核心：抓取与降级 |
-| `plugin/core/sources.js` | 458 | 核心：源注册表与单源管线 |
-| `plugin/core/api.js` | 1051 | 核心：门面（t27 改 `notice()` 后由 1036 → 1051） |
-| `plugin/core/index.js` | 205 | ESM 加载入口（沙箱求值） |
+| `plugin/core/constants.js` | 524 | 核心：真值（t17 修正被阻断域名的判据注释；t23 拆分 `MIT-plexpt`） |
+| `plugin/core/text.js` | 370 | 核心：纯文本化（t22 修行内标签处理） |
+| `plugin/core/filter.js` | 320 | 核心：内容过滤 |
+| `plugin/core/storage.js` | 946 | 核心：持久化（含 writeMode 限定式说明与迁移护栏） |
+| `plugin/core/normalize.js` | 634 | 核心：CSV + 四适配器 |
+| `plugin/core/net.js` | 481 | 核心：抓取与降级 |
+| `plugin/core/sources.js` | 459 | 核心：源注册表与单源管线 |
+| `plugin/core/api.js` | 1052 | 核心：门面（t27 改 `notice()`；`F-R2-2` 按 distinct `licenseId` 分源输出） |
+| `plugin/core/index.js` | 206 | ESM 加载入口（沙箱求值） |
 | `plugin/core/node-reader.js` | 45 | 仅 Node：读核心源码 |
-| `plugin/core/browser.js` | **4891** | 浏览器半身成品（9 单元，免构建可内联；**t29 实测刷新**） |
-| `plugin/core/selftest-node.js` | 1024 | 【可选】Node 自检（断言**未实测**；t26 第二轮分诊后行数） |
-| `plugin/core/assemble-browser.js` | ~236 | 【可选】拼装/校验 browser.js |
-| `plugin/core/build-client-bundle.js` | 209 | 【可选·只读】校验 client.js 内联区 |
+| `plugin/core/browser.js` | **4894** | 浏览器半身成品（9 单元，免构建可内联；**第七次实测刷新**） |
+| `plugin/core/selftest-node.js` | 1025 | 【可选】Node 自检（断言**未实测**；t26 第二轮分诊后行数） |
+| `plugin/core/assemble-browser.js` | 313 | 【可选】拼装/校验 browser.js（**实测修正**，此前台账误记为 ~236） |
+| `plugin/core/build-client-bundle.js` | 210 | 【可选·只读】校验 client.js 内联区（**已修为可加载**，见下） |
 | `plugin/core/check-data-layer.ps1` | 503 | 无需 JS 运行时的静态自检（**命令未实测**） |
 | `plugin/core/README.md` | — | 一分钟上手 |
 | `docs/DATA-01-数据层接口.md` | — | 对外接口契约（默认值/判据已在 t17 与代码对齐） |

@@ -7,7 +7,7 @@
 対話欄からワンクリックでプロンプトを閲覧・検索・お気に入り登録 —— 選んだ内容がそのまま入力欄に入ります
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#インストール)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#ビルド手順が不要な理由)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#データとプライバシー)
@@ -171,31 +171,51 @@ flowchart TD
 - DeepSeek Harness デスクトップ版
 - プラグインの**実行時に Node は不要**（Node が必要になるのは開発用セルフチェックを回すときだけです）
 
-### 方法 1：コマンドライン（推奨）
+### 方法 1：GitHub から直接インストール（推奨・クローン不要）
 
 ```cmd
-dsh plugin --profile desktop add "<本仓库路径>"
+dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
+```
+
+リポジトリの URL でも構いません：
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
+```
+
+DSH の**設定 → プラグイン → プラグインを追加**ダイアログに貼り付けてもかまいません。
+このダイアログは 3 つの形式（npm パッケージ名 / GitHub の URL / ローカルディレクトリのパス）を受け付けます。
+
+> 初回のインストールにはネットワークと `git` が必要です。
+> インストール後は **DSH を完全に終了し、開き直してください**。
+
+### 方法 2：ローカルディレクトリからインストール
+
+先にクローンしてから、そのディレクトリを指定してインストールします：
+
+```cmd
+git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
+dsh plugin --profile desktop add "<クローンしたディレクトリ>"
 ```
 
 `dsh` が PATH に通っていない場合は、DSH のインストールディレクトリにあるシムを使います：
 
 ```cmd
-"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>"
+"<DSH のインストール先>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<ディレクトリ>"
 ```
-
-### 方法 2：GUI
-
-DSH の**設定 → プラグイン**ページで、本リポジトリの `plugin` ディレクトリのパスを入力します。
 
 ### 方法 3：シンボリックリンク（開発者向け）
 
 ```cmd
-mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
+mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<リポジトリのパス>"
 ```
 
 コードを変更した後は、**DSH を再起動するだけでよく、再インストールは不要**です。
 
 > 🔄 **インストール後は DSH を完全に終了し、開き直す必要があります** —— profile は起動時に読み込まれるためです。
+>
+> ℹ️ DSH のプラグイン導入は内部的に **pnpm** が行います。本パッケージには **`prepare` ビルドスクリプトがありません** ので、
+> `pnpm-workspace.yaml` に `allowBuilds` を設定する必要はありません。
 
 ### インストールの確認
 

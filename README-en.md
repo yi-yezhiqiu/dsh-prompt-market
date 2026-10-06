@@ -7,7 +7,7 @@
 Browse, search, and bookmark prompts from the chat box — pick one and it goes straight into your input box
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#installation)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#why-there-is-no-build-step)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#data--privacy)
@@ -172,31 +172,51 @@ flowchart TD
 - The DeepSeek Harness desktop app
 - The plugin **needs no Node at runtime** (Node is only required for the development self-checks)
 
-### Option 1: Command line (recommended)
+### Option 1: Install straight from GitHub (recommended — no clone needed)
 
 ```cmd
-dsh plugin --profile desktop add "<本仓库路径>"
+dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
+```
+
+The repository URL works too:
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
+```
+
+Or paste either one into DSH's **Settings → Plugins → Add plugin** dialog.
+All three forms are accepted there: an npm package name, a GitHub URL, or a local directory path.
+
+> The first install needs network access and `git`.
+> Afterwards, **quit DSH completely and open it again**.
+
+### Option 2: Install from a local directory
+
+Clone first, then install that directory:
+
+```cmd
+git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
+dsh plugin --profile desktop add "<the directory you just cloned>"
 ```
 
 If `dsh` isn't on your PATH, use the shim inside the DSH installation directory:
 
 ```cmd
-"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>"
+"<DSH install dir>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<directory>"
 ```
-
-### Option 2: The GUI
-
-In DSH, open **Settings → Plugins** and enter the path to this repository's `plugin` directory.
 
 ### Option 3: Symlink (developers)
 
 ```cmd
-mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
+mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<repository path>"
 ```
 
 After that, changing the code **only needs a DSH restart — no reinstall**.
 
 > 🔄 **After installing, quit DSH completely and open it again** — profiles are loaded at startup.
+>
+> ℹ️ DSH installs plugins through **pnpm** under the hood. This package ships **no `prepare` build script**,
+> so you do not need an `allowBuilds` entry in `pnpm-workspace.yaml`.
 
 ### Verify the installation
 

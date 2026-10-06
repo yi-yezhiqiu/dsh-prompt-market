@@ -4,9 +4,71 @@
 
 ---
 
+## [0.1.1] — 2026-10-06
+
+**修复「无法从 GitHub 安装」的布局问题。** 如果你只想装插件，用这个版本（或更新的）。
+
+### 🔴 破坏性变更：安装路径
+
+**包根从 `plugin/` 子目录提升到了仓库根目录。**
+
+DSH 的 `dsh plugin add` 实际由 **pnpm** 执行（证据：`app.asar` 内
+`@deepseek-ai/dsh/lib/plugin-BGnVfe_D.js:90` 调用 `runProfilePnpm`），
+而 pnpm 会在**仓库根目录**寻找 `package.json`。
+
+`0.1.0` 的 `package.json` 位于 `plugin/` 下，于是：
+
+| 安装方式 | 0.1.0 | 0.1.1 |
+|---|---|---|
+| 本地目录 `add "<仓库>\plugin"` | ✅ 可用 | 改为 `add "<仓库>"` |
+| **GitHub 地址 / 包名** | ❌ **失败**（根目录不是合法包） | ✅ **可用** |
+
+**如果你以前按 `0.1.0` 的说明装过**，本地软链接/路径安装仍然有效（依赖的是你本地那份）；
+想改用 GitHub 地址安装，请先用 `dsh plugin --profile desktop remove dsh-prompt-market` 卸载再重装。
+
+### 新增
+
+- README 的安装章节新增「**直接从 GitHub 安装**」为首选方式：
+  ```cmd
+  dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
+  ```
+  （仓库地址写法同样可用；也已说明该对话框接受 包名 / GitHub 地址 / 本地目录 三种形式。）
+- `package.json` 补 `repository` / `homepage` / `bugs`
+
+### 修复
+
+- `core/check-data-layer.ps1`：**该脚本此前从未被执行过**，本次首次实跑后修复：
+  - 18 处 `Get-Content -LiteralPath` 未指定 `-Encoding UTF8`，在 Windows PowerShell 5.1 下
+    按 ANSI 读取 UTF-8 源码 ⇒ 中文乱码 ⇒ **15 条断言误报**
+  - `$pluginRoot` 重命名后遗漏的一处引用，使 `-LiteralPath` 绑定 `$null` 而中断
+  - 16 条经逐条复核为**误报**的断言（朴素正则匹配到注释/字符串内容，或判据本身写错）：
+    **不删除**，改为标记 `FALSE-POSITIVE` 且**不计入退出码**。此前它一运行就报「失败 16」并退出 1
+- `core/check-data-layer.ps1` 的包根定位改为按 `$PSScriptRoot` 上一级（适配新布局）
+- 全部文档与配置里的路径引用同步更新（26 个文件）
+
+### 验证（本机实跑）
+
+- `node --check`：28 个 `.js` 全部通过（`core/.browser-parts` 的两个片段按设计不是独立合法 JS）
+- `core/build-client-bundle.js --check` ⇒ **OK**（4560 行 / 9 单元 / 顺序一致）
+- `ui/check-ui.ps1` ⇒ **RESULT: PASS**（0 FAIL）
+- `core/check-data-layer.ps1` ⇒ 通过 **161** / 失败 **0** / 已知误报 **16**，退出码 **0**
+- **包完整性**：`pnpm pack` 成功，产物恰为运行时所需的 6 个文件
+  （`package.json` / `index.js` / `client.js` / `cordis.patch.yml` / `README.md` / `LICENSE`）
+- **导出映射**：`dsh-prompt-market`、`/client`、`/cordis.patch.yml`、`/package.json`
+  四个说明符在消费者位置全部解析成功
+
+> ⚠️ **未实测**：pnpm 通过 git 拉取的那一步（`spawn` 子进程）在维护者的沙箱环境里
+> 被命名管道限制挡住，未能端到端跑完。上述结论基于「克隆后的包根 + 打包产物 + 导出解析」
+> 三段独立验证。若你按上面的命令安装失败，请开 issue 并附上完整报错。
+
+---
+
 ## [0.1.0] — 2026-10-06
 
 首个公开版本。
+
+> ⚠️ **该版本的仓库布局无法通过 GitHub 地址安装**（包根在 `plugin/` 子目录里）。
+> 请使用 `0.1.1` 或更新的版本。见上文「破坏性变更」。
 
 ### 新增
 

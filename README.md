@@ -7,7 +7,7 @@
 在对话框里一键浏览、搜索、收藏提示词 —— 选中即写入输入框
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#安装)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#为什么可以没有构建步骤)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#数据与隐私)
@@ -172,21 +172,36 @@ flowchart TD
 - DeepSeek Harness 桌面端
 - 插件**运行时不依赖 Node**（Node 只在跑开发自检时需要）
 
-### 方式一：命令行（推荐）
+### 方式一：直接从 GitHub 安装（推荐，无需克隆）
 
 ```cmd
-dsh plugin --profile desktop add "<本仓库路径>"
+dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
+```
+
+也可以直接用仓库地址：
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
+```
+
+或者把它填进 DSH 的**设置 → 插件 → 添加插件**对话框（三种写法都接受：npm 包名 / GitHub 地址 / 本地目录路径）。
+
+> 首次安装需要网络与 `git`。装完**完全退出并重新打开** DSH。
+
+### 方式二：本地目录安装
+
+先在本地克隆，再安装那个目录：
+
+```cmd
+git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
+dsh plugin --profile desktop add "<刚克隆出来的目录>"
 ```
 
 `dsh` 不在 PATH 时，用 DSH 安装目录下的垫片：
 
 ```cmd
-"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>"
+"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<目录>"
 ```
-
-### 方式二：图形界面
-
-在 DSH 的**设置 → 插件**页面里填写本仓库的 `plugin` 目录路径。
 
 ### 方式三：软链接（开发者）
 
@@ -197,6 +212,9 @@ mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
 改代码后**只需重启 DSH，不用重装**。
 
 > 🔄 **安装后必须完全退出并重新打开 DSH** —— profile 是启动期加载的。
+>
+> ℹ️ DSH 的插件安装实际由 **pnpm** 完成。插件包**没有 `prepare` 构建脚本**，
+> 所以不需要在 `pnpm-workspace.yaml` 里配置 `allowBuilds`。
 
 ### 验证安装
 

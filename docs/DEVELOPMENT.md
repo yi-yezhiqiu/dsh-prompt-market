@@ -28,15 +28,15 @@ DeepSeek Harness 桌面端插件：输入框旁「提示词导入」按钮 + 浮
 
 | 用途 | 归属 | 主通道 | 依据 |
 |---|---|---|---|
-| **产品面板插入**（req-9） | `plugin/ui/` 自带 helper：`ns.write.insert(...)` → `ns.write.finalizeInsert(...)`；整段覆盖走 `ns.write.replace(...)`（仅当捕获到的选区覆盖全文，否则 `ns.write.refuseReplace(...)` 拒绝并提示先全选） | **`insertText(text, captureInsertion())`** | DSH-01 req-9 要求写入**可被 Ctrl+Z 撤销**，官方只为 `insertText` 承诺「undoable plain-text edit」（asar:403343） |
+| **产品面板插入**（req-9） | `ui/` 自带 helper：`ns.write.insert(...)` → `ns.write.finalizeInsert(...)`；整段覆盖走 `ns.write.replace(...)`（仅当捕获到的选区覆盖全文，否则 `ns.write.refuseReplace(...)` 拒绝并提示先全选） | **`insertText(text, captureInsertion())`** | DSH-01 req-9 要求写入**可被 Ctrl+Z 撤销**，官方只为 `insertText` 承诺「undoable plain-text edit」（asar:403343） |
 | **探针 / 诊断**（C2 归因） | `lib/write-draft.js`（`__promptMarketWrite`） | `setDraft` 优先 | 诊断需要「`setDraft` 单独调用」这条对照路径，其顺序对归因有用 |
 
 > ⚠️ **不要**把产品面板接回 `lib/write-draft.js`：该模块 `setDraft` 优先，接回去会命中 F-8 的失败判据
 > （写入不可撤销）。`lib/write-draft.js` 里的 `fallbackSetDraft` 也带「**不得被产品路径调用**」注释。
-> 产品路径只经 `plugin/ui/30-write.js` 的 helper（`client.js` 内联其副本）；产品路径的 `method` 恒为
+> 产品路径只经 `ui/30-write.js` 的 helper（`client.js` 内联其副本）；产品路径的 `method` 恒为
 > `'insertText'`，**不存在** `method:'setDraft'` 分支。
 
-产品侧调用形态（摘自 `plugin/ui/60-components.js` 的 `A.insertItem`）：
+产品侧调用形态（摘自 `ui/60-components.js` 的 `A.insertItem`）：
 
 ```js
 // 产品插入：只经 ns.write，主通道 insertText
@@ -61,7 +61,7 @@ if (rep.pending === true) {                      // 异步读回断言（把「�
 4. 任何失败都返回 `{ ok:false, reason }`，**不抛错**——槽位组件抛错会整块空白（asar:292610）。
 
 详见 [`../docs/SPIKE-01-写入试验报告.md`](../docs/SPIKE-01-写入试验报告.md) 与
-`plugin/ui/DESIGN.md`（§10 实施记录、F-8 判据）。
+`ui/DESIGN.md`（§10 实施记录、F-8 判据）。
 
 ## 自检 / 验证
 

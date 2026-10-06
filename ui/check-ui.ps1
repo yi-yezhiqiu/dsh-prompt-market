@@ -82,7 +82,7 @@ foreach ($u in $unitNames) {
 $browser = Read-Text $coreFile
 $expectedUnits = @('constants.js','text.js','filter.js','storage.js','normalize.js','net.js','sources.js','api.js','bootstrap')
 if ($null -eq $browser) {
-  Warn 'A2' 'plugin/core/browser.js not found - data layer region check skipped'
+  Warn 'A2' 'core/browser.js not found - data layer region check skipped'
 } else {
   # Only real marker LINES: `/* BEGIN inlined file: <name> */` (leading whitespace and ==== style
   # decorations tolerated). The previous unanchored pattern also matched the prose in the file
@@ -106,8 +106,8 @@ if ($null -eq $browser) {
 
 # ---------------------------------------------------------------- code-text helper (comments out)
 # Assertions that look for code patterns must not be fooled by comments or documentation text
-# (e.g. plugin/ui/10-theme.js:5 documents "var(--dsw-*)" in a comment, and
-#  plugin/core/browser.js:44 documents the marker syntax). Get-CodeText removes // and /* */
+# (e.g. ui/10-theme.js:5 documents "var(--dsw-*)" in a comment, and
+#  core/browser.js:44 documents the marker syntax). Get-CodeText removes // and /* */
 # comments while preserving string literals verbatim, so URLs and CSS strings stay intact.
 function Get-CodeText([string]$text) {
   $out = New-Object System.Text.StringBuilder
@@ -190,7 +190,7 @@ else { Pass 'A4c' 'no JSX-like markup in UI code (comments excluded)' }
 # i.e. inside a quoted address. Comment lines are ignored and self-check / fixture files
 # (*selftest*, *check-*) are exempt. A5b reports the stricter "bare literal on a non-comment,
 # non-fixture line" case separately: that pattern is only safe when the host is assembled at
-# runtime (see plugin/ui/60-components.js PM_BLOCKED_RAW_HOST).
+# runtime (see ui/60-components.js PM_BLOCKED_RAW_HOST).
 $urlRx = [regex]"['""]\s*(https?:)?//[^'""]*raw\.githubusercontent\.com"
 $fixtureRx = [regex]'(selftest|check-)'
 $urlHits = @()
@@ -329,10 +329,10 @@ else {
   else { Warn 'A12b' ('only ' + $hit + ' error codes referenced; error states may not cover the data-layer code set') }
 }
 
-# ---------------------------------------------------------------- A13 assembly status of plugin/client.js (INFO unless assembly started)
+# ---------------------------------------------------------------- A13 assembly status of client.js (INFO unless assembly started)
 $client = Read-Text $clientFile
 if ($null -eq $client) {
-  Info 'A13' 'plugin/client.js not found - assembly not started (expected: t4 scope is plugin/ui/, assembly belongs to the integration task)'
+  Info 'A13' 'client.js not found - assembly not started (expected: t4 scope is ui/, assembly belongs to the integration task)'
 } else {
   $cb = $client.IndexOf('PM-CORE-INLINE:BEGIN'); $ce = $client.IndexOf('PM-CORE-INLINE:END')
   $ub = $client.IndexOf('PM-UI-INLINE:BEGIN');   $ue = $client.IndexOf('PM-UI-INLINE:END')
@@ -342,7 +342,7 @@ if ($null -eq $client) {
     Warn 'A13' 'client.js has a core region but browser.js is unavailable for comparison'
   } else {
     # Comparison unit = the whole inlined segment INCLUDING the /* BEGIN|END inlined file: X */ markers,
-    # i.e. exactly what the authoritative tool plugin/core/build-client-bundle.js --check compares.
+    # i.e. exactly what the authoritative tool core/build-client-bundle.js --check compares.
     # (The previous regex expected the unit name to be followed directly by a newline, but the real
     #  marker line is `/* BEGIN inlined file: constants.js */` - it could never match, so A13 always
     #  reported "cannot extract unit body" instead of comparing content.)
@@ -387,10 +387,10 @@ if ($null -eq $client) {
     $n2 = [Math]::Min($expectedUi.Count, $gotUi.Count)
     $diff2 = -1
     for ($i = 0; $i -lt $n2; $i++) { if ($expectedUi[$i] -ne $gotUi[$i]) { $diff2 = $i; break } }
-    if ($diff2 -lt 0 -and $expectedUi.Count -eq $gotUi.Count) { Pass 'A14' 'client.js PM-UI-INLINE region matches the plugin/ui units' }
+    if ($diff2 -lt 0 -and $expectedUi.Count -eq $gotUi.Count) { Pass 'A14' 'client.js PM-UI-INLINE region matches the ui units' }
     else {
       if ($diff2 -lt 0) { $diff2 = $n2 }
-      Warn 'A14' ('client.js UI region differs from plugin/ui units (first differing normalized line ' + ($diff2 + 1) + ')')
+      Warn 'A14' ('client.js UI region differs from ui units (first differing normalized line ' + ($diff2 + 1) + ')')
     }
   } else {
     Info 'A14' 'client.js has no PM-UI-INLINE region - UI assembly not started'
@@ -403,7 +403,7 @@ foreach ($r in $results) { if ($r.level -eq 'FAIL') { $failCount++ }; if ($r.lev
 
 if ($Json) {
   $payload = [pscustomobject]@{
-    script = 'plugin/ui/check-ui.ps1'
+    script = 'ui/check-ui.ps1'
     staticChecked = $true
     runtimeUntested = $true
     failCount = $failCount

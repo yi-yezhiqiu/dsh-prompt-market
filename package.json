@@ -24,6 +24,14 @@
     "prompts"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yi-yezhiqiu/dsh-prompt-market.git"
+  },
+  "homepage": "https://github.com/yi-yezhiqiu/dsh-prompt-market#readme",
+  "bugs": {
+    "url": "https://github.com/yi-yezhiqiu/dsh-prompt-market/issues"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"

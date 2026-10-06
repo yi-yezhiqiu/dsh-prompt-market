@@ -1,9 +1,9 @@
 # UI-DESIGN-01 · t4 客户端界面设计契约（uismith）
 
 > 状态：**等待期只读准备产物**。t4 尚未领取（`claim_task(t4)` → blocked by t3）。本文件是设计契约，
-> 不含运行时代码；`plugin/client.js` 只在 t4 一次性完整装配，**中途不留能被下次启动加载的半成品**。
+> 不含运行时代码；`client.js` 只在 t4 一次性完整装配，**中途不留能被下次启动加载的半成品**。
 > 依据：`docs/CONSTRAINTS-01 §C.1/§D/§E`、`docs/CONTRACTS-01 · t-ui`、`docs/DSH-01 §2/§3/§5`、`docs/DATA-01-数据层接口.md`、
-> `plugin/core/api.js`（现成接口面）、`docs/USER-ACCEPT-01-用户实测步骤.md`、`docs/USER-ACCEPT-02-实测结果判定.md`（verifier 的 E-7/E-9/E-10、F-1/F-2/F-3）、
+> `core/api.js`（现成接口面）、`docs/USER-ACCEPT-01-用户实测步骤.md`、`docs/USER-ACCEPT-02-实测结果判定.md`（verifier 的 E-7/E-9/E-10、F-1/F-2/F-3）、
 > 队长第 3–5 轮裁决与 verifier 的探针/BOM 反馈（setDraft 结论未定；insertText 主通道理由=可撤销；「替换」为条件动作；`replace` 不进取值域；
 > 否定性断言纪律；面向用户命令须标注「未实测」）。
 > 标注：🟩 有逐字证据 / 🟨 需运行时确认（t8 用户验收闸门）。
@@ -14,7 +14,7 @@
 
 > 🟥 **标记口径澄清（最显眼位置；评审与 verifier 必读）**
 > `client.js` 里的 `/* PM-CORE-INLINE:BEGIN/END */`（数据层）与 `/* PM-UI-INLINE:BEGIN/END */`（UI 源码）是
-> **我方自己在 `client.js` 里定义的装配锚点**，**只在 `client.js` 出现**；`plugin/core/browser.js` 里的是 datasmith 侧的
+> **我方自己在 `client.js` 里定义的装配锚点**，**只在 `client.js` 出现**；`core/browser.js` 里的是 datasmith 侧的
 > 分段标记 `/* BEGIN inlined file: <name> */` … `/* END inlined file: <name> */`（**单行、顶格、无 `====` 装饰**；旧稿的装饰形态已作废）。
 > **两者不是同一个东西**：不要去 `browser.js` 找 `PM-CORE-INLINE`（**找不到是正常的，不是缺陷**），
 > 也不要用 `BEGIN/END inlined file` 去 `client.js` 里找锚点。**提取来源统一**为 `browser.js` 的 **9 个单元区**（见下）。
@@ -23,14 +23,14 @@
 
 | 项 | 规定 |
 |---|---|
-| 唯一运行时产物 | `plugin/client.js`（自包含 ModuleLoader bundle，手写；`require` 只取 `react`） |
-| 数据层来源 | **装配方式 B（队长认可）**：把 `plugin/core/browser.js` 的 **9 个单元区**（`/* BEGIN inlined file: <name> */` … `/* END inlined file: <name> */`，子串容错匹配）的**单元体**整段**顶格**粘贴进 `client.js` 的 `PM-CORE-INLINE` 标记区。单元名：`constants.js` `text.js` `filter.js` `storage.js` `normalize.js` `net.js` `sources.js` `api.js` **`bootstrap`**（⚠️ `bootstrap` **无 `.js` 后缀**，解析勿写死 `\.js$`）。8 个数据单元以 `})(__pmCore);` 收尾，`bootstrap` 以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾，都是**自带 IIFE 的完整语句**。**不**内联 UMD 外壳/head/tail。数据层命名空间落 `window.__pmCore`（由 `bootstrap` 单元挂载），UI 取 `__pmCore.getMarket()`（=`api.getShared({})`） |
-| UI 源码权威副本 | `plugin/ui/*.js`（每单元独立成句，可分段内联）；`client.js` 的对应标记区是装配产物 |
+| 唯一运行时产物 | `client.js`（自包含 ModuleLoader bundle，手写；`require` 只取 `react`） |
+| 数据层来源 | **装配方式 B（队长认可）**：把 `core/browser.js` 的 **9 个单元区**（`/* BEGIN inlined file: <name> */` … `/* END inlined file: <name> */`，子串容错匹配）的**单元体**整段**顶格**粘贴进 `client.js` 的 `PM-CORE-INLINE` 标记区。单元名：`constants.js` `text.js` `filter.js` `storage.js` `normalize.js` `net.js` `sources.js` `api.js` **`bootstrap`**（⚠️ `bootstrap` **无 `.js` 后缀**，解析勿写死 `\.js$`）。8 个数据单元以 `})(__pmCore);` 收尾，`bootstrap` 以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾，都是**自带 IIFE 的完整语句**。**不**内联 UMD 外壳/head/tail。数据层命名空间落 `window.__pmCore`（由 `bootstrap` 单元挂载），UI 取 `__pmCore.getMarket()`（=`api.getShared({})`） |
+| UI 源码权威副本 | `ui/*.js`（每单元独立成句，可分段内联）；`client.js` 的对应标记区是装配产物 |
 | 内联位置 | `client.js` 内由**我方自己定义**的成对标记：数据层用 `/* PM-CORE-INLINE:BEGIN */ … /* PM-CORE-INLINE:END */`，UI 源码用 `/* PM-UI-INLINE:BEGIN */ … /* PM-UI-INLINE:END */`；两区都**顶格粘贴**（不加缩进），以便逐行比对。<br>⚠️ 这两个标记**只存在于 `client.js`**（是我方装配标记）；**不要**去 `browser.js` 找 `PM-CORE-INLINE`——那里只有 `BEGIN/END inlined file: <name>` |
 | 分段安全 | 每个内联单元（= 每个核心文件 / 每个 `ui/*.js` 单元）自成**完整语句**（自带 IIFE），故逐个插入时**每一步 `client.js` 都是合法 JS** |
-| 🟥 装配前置闸门（按**不变量**判定；实测依据：队长逐对核过行号 + `.linecount.txt §1`） | **唯一权威标记 = `BEGIN inlined file: <name>` / `END inlined file: <name>`**（子串容错匹配；t2 时代的 `PM-CORE-INLINE:BEGIN/END` 已作废，**不要再等它**）。判据 = **9 个单元区间全部存在、成对且各自闭合**：8 个数据单元体以 `})(__pmCore);` 收尾，`bootstrap` 以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾。**九区齐全即可装配**。<br>实测行号（会漂移，仅作参考）：`constants.js` 52–535 · `text.js` 537–898 · `filter.js` 900–1213 · `storage.js` 1215–2146 · `normalize.js` 2148–2765 · `net.js` 2767–3246 · `sources.js` 3248–3698 · `api.js` 3700–4727 · `bootstrap` 4729–4843（全文件 4843 行）。<br>🟥 **一致性判据的权威来源是 `browser.js` 的标记区内容**（`client.js` 必须与之**逐行一致，去行首缩进/去空行后**）；**不要**与 `plugin/core/*.js` 核心源文件逐行比对——它们**语义同源但非 1:1**（单元体用更短的说明头，`storage` 有 2 处语义等价的紧凑写法；出处 `plugin/core/.linecount.txt §1` 末尾）。<br>🟥 不要把 UMD 外壳 / tail / `return { … }` 当判据（可能永不拼进 `browser.js`）。<br>🟥 缺任一区 ⇒ **停下来报队长**，绝不自行拼装、补齐或改动缺失部分 |
+| 🟥 装配前置闸门（按**不变量**判定；实测依据：队长逐对核过行号 + `.linecount.txt §1`） | **唯一权威标记 = `BEGIN inlined file: <name>` / `END inlined file: <name>`**（子串容错匹配；t2 时代的 `PM-CORE-INLINE:BEGIN/END` 已作废，**不要再等它**）。判据 = **9 个单元区间全部存在、成对且各自闭合**：8 个数据单元体以 `})(__pmCore);` 收尾，`bootstrap` 以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾。**九区齐全即可装配**。<br>实测行号（会漂移，仅作参考）：`constants.js` 52–535 · `text.js` 537–898 · `filter.js` 900–1213 · `storage.js` 1215–2146 · `normalize.js` 2148–2765 · `net.js` 2767–3246 · `sources.js` 3248–3698 · `api.js` 3700–4727 · `bootstrap` 4729–4843（全文件 4843 行）。<br>🟥 **一致性判据的权威来源是 `browser.js` 的标记区内容**（`client.js` 必须与之**逐行一致，去行首缩进/去空行后**）；**不要**与 `core/*.js` 核心源文件逐行比对——它们**语义同源但非 1:1**（单元体用更短的说明头，`storage` 有 2 处语义等价的紧凑写法；出处 `core/.linecount.txt §1` 末尾）。<br>🟥 不要把 UMD 外壳 / tail / `return { … }` 当判据（可能永不拼进 `browser.js`）。<br>🟥 缺任一区 ⇒ **停下来报队长**，绝不自行拼装、补齐或改动缺失部分 |
 | 🟥 半成品禁令 | profile 是以 `link:<仓库路径>/plugin` 方式安装的（**已启用**）⇒ 改动**下次启动即生效**。装配期间若中断，`client.js` 必须仍**可加载**：数据层缺失时只降级成界面内的「数据层未内联」错误态，绝不白屏或抛错 |
-| 免重装 | 改 `plugin/client.js` 后**不需重装**，重启桌面端即可；README/交付说明按此写 |
+| 免重装 | 改 `client.js` 后**不需重装**，重启桌面端即可；README/交付说明按此写 |
 
 ---
 
@@ -99,7 +99,7 @@ PmMarketPanel                      conversation.input.overlay
 
 ## 4. 数据层适配层（单一入口，抗接口漂移）
 
-`plugin/ui/adapter.js` 的职责：**UI 只认它的方法名**，DATA-01 若改签名只需改这一处。
+`ui/adapter.js` 的职责：**UI 只认它的方法名**，DATA-01 若改签名只需改这一处。
 
 | 适配方法 | 调用的数据层 | 返回给 UI |
 |---|---|---|
@@ -109,7 +109,7 @@ PmMarketPanel                      conversation.input.overlay
 | `createCustom/updateCustom/removeCustom` | `market.custom.*` | `{ok, item?, code, message}` |
 | `tagList/addTag/renameTag/removeTag/applyTags` | `market.tags.*` | `{ok, tags?, code, message}` |
 | `sourceList/addSource/updateSource/removeSource/setEnabled/testSource/clearCache` | `market.sources.*` | `{ok, sources?, status?, code, message}` |
-| `settingsGet/Update` / `filterGet/SetEnabled/SetActionMode/SetRuleEnabled/SetTerms` | `market.settings.*` / `market.filter.*` | `{ok, settings:{…, writeModes:[…]}}` —— 🟥 写入策略选项**必须**由 `settingsGet().settings.writeModes` 驱动（`plugin/core/api.js:694` 已返回该数组），**不得硬编码**；`filterGet()` 提供 `{settings, rules, enabled, actionMode}` |
+| `settingsGet/Update` / `filterGet/SetEnabled/SetActionMode/SetRuleEnabled/SetTerms` | `market.settings.*` / `market.filter.*` | `{ok, settings:{…, writeModes:[…]}}` —— 🟥 写入策略选项**必须**由 `settingsGet().settings.writeModes` 驱动（`core/api.js:694` 已返回该数组），**不得硬编码**；`filterGet()` 提供 `{settings, rules, enabled, actionMode}` |
 | `licenseNotice/acknowledge` | `market.licenses.*` | `{ok, text, acknowledged}` |
 | `exportJSON/importJSON/downloadExport/importFromFile` | `market.data.*` | `{ok, json?, fileName?, stats?, code, message}` |
 
@@ -160,15 +160,15 @@ UI 义务：显示 `backendReport.kind` + `durable`；`store.status().readOnly==
   ② **支持性事实（不是主因）**：`setDraft` 的写入归因**尚未定论**（`CONSTRAINTS-01 §C.1` 已改为 🟨；严禁再写成「setDraft 不可用」）。
   🟥 两者性质不同：即使将来探针证明 `setDraft` 可用，**理由 ① 仍然成立**，主通道顺序不变；
   反之把 ② 当主因，一旦探针翻转理由就塌。故本契约把顺序**固定为 `insertText` 主 → `setDraft` 备**，
-  并注明回归风险：`plugin/lib/write-draft.js` 的默认顺序是 `setDraft → insertText`，照它改回就会丢掉 req-9 的可撤销性。
+  并注明回归风险：`lib/write-draft.js` 的默认顺序是 `setDraft → insertText`，照它改回就会丢掉 req-9 的可撤销性。
 - **`writeMode` 取值域（队长裁决；datasmith 已落地、verifier 已核）**：取值域只有 `insert`（光标处插入）与 `append`（追加、自动补空行）。
-  **证据（「**代码存在**」级，非「已通过」级）**：`plugin/core/storage.js:273` `var WRITE_MODES = ['insert', 'append'];`、默认值 `:202`、
-  脏值静默回落 `:279-284`；`plugin/core/api.js:701-712` 主动拒绝 `'replace'`；用例 `selftest-node.js:666-696`（**从未被执行**——队内无命令执行面）。
-  🟥 **UI 硬要求**：写入策略选项**由 `settings.get().settings.writeModes` 驱动**（`plugin/core/api.js:694` 已返回该数组），**禁止硬编码** `['insert','append']`；
+  **证据（「**代码存在**」级，非「已通过」级）**：`core/storage.js:273` `var WRITE_MODES = ['insert', 'append'];`、默认值 `:202`、
+  脏值静默回落 `:279-284`；`core/api.js:701-712` 主动拒绝 `'replace'`；用例 `selftest-node.js:666-696`（**从未被执行**——队内无命令执行面）。
+  🟥 **UI 硬要求**：写入策略选项**由 `settings.get().settings.writeModes` 驱动**（`core/api.js:694` 已返回该数组），**禁止硬编码** `['insert','append']`；
   界面**不得**出现 `replace` 选项（**连置灰项也不许**）。
   🟥 **判定纪律**：以上只是「代码存在」证据，**不是**「已通过」——我（及我方文档）**不得**写「自检通过」。
-- 🟥 **UI 文案的措辞来源（verifier 指出）**：用户可见文案**只许**沿用 `plugin/core/api.js:710` 的**限定式**表述（「没有清空草稿/设置选区的能力」）；
-  **不得**把 `plugin/core/storage.js:199-201` 那条绝对式注释（「没有可用实现路径」）抄成 UI 文案——它与「替换是条件动作」的裁决不一致。
+- 🟥 **UI 文案的措辞来源（verifier 指出）**：用户可见文案**只许**沿用 `core/api.js:710` 的**限定式**表述（「没有清空草稿/设置选区的能力」）；
+  **不得**把 `core/storage.js:199-201` 那条绝对式注释（「没有可用实现路径」）抄成 UI 文案——它与「替换是条件动作」的裁决不一致。
 - **「替换」是条件动作、不是设置项（队长补充裁决）**：界面**可以**提供一个「替换」动作，条件语义固定如下：
   1. 触发时先 `captureInsertion()` 捕获选区（**当场捕获、当场插入**，中间不得有 await）；
   2. 若捕获到的选区**覆盖草稿全部内容** ⇒ 如实呈现为「替换」并执行 `insertText(text, span)`；
@@ -205,11 +205,11 @@ UI 义务：显示 `backendReport.kind` + `durable`；`store.status().readOnly==
   `insertText` 返回 **`false` 就是「没写入」**（asar:403343 的拒绝语义），**必须如实呈现**；
   `coversAll === "unknown"` 时**根本不应调用** `insertText`（此时 `insertTextReturned` 必须为 `null`）。
 - 🟥 **跨产物冲突 F-8 的处置（verifier 发现，已报队长）**：既有产物仍写「`setDraft` 首选、`insertText` 降级」——
-  `plugin/lib/write-draft.js:130-134`、`plugin/client.js:140-171`（**当前装的就是这份**）、`plugin/README.md:23/30-36`、
+  `lib/write-draft.js:130-134`、`client.js:140-171`（**当前装的就是这份**）、`docs/DEVELOPMENT.md:23/30-36`、
   `docs/check-plugin.ps1:251`（把旧序固化成断言）。若面板照 README 走 `writeAndVerify`，主通道会**静默变回 `setDraft`**，
   req-9 的 Ctrl+Z 落空，且只有真机点一次才看得出来。处置（设计已定，实施在 t4）：
   ① **面板直接调 `insertText`** —— 用 **UI 侧自有写入 helper**（insertText 主 → setDraft 备 + 读回断言），**不调用** `write-draft.js` 的 `writeAndVerify`；
-  ② `plugin/README.md`（在 t4 的 `plugin/` 范围内，我会改）把「写入**一律**走 `lib/write-draft.js`」**收窄**为「t2 试验脚本专用；正式面板走 `client.js` 的 insertText 主通道」；
+  ② `docs/DEVELOPMENT.md`（在 t4 的 `plugin/` 范围内，我会改）把「写入**一律**走 `lib/write-draft.js`」**收窄**为「t2 试验脚本专用；正式面板走 `client.js` 的 insertText 主通道」；
   ③ `docs/check-plugin.ps1:251`（**不在** t4 的 `plugin/` 范围）与 `lib/write-draft.js` 的旧序**请队长指派归属方同步**；我在 t4 报告显式登记该断言已过期，并由 `check-ui.ps1` 断言 7/16 覆盖新序；
   ④ 分工固定（队长裁决，供评审核对）：
 
@@ -321,19 +321,19 @@ setDraftAlone: {
 用法（文档与脚本头部注释都必须写这条，禁止只写 `pwsh`）：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1"
-powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Json
+powershell -NoProfile -ExecutionPolicy Bypass -File "ui\check-ui.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "ui\check-ui.ps1" -Json
 # 退出码：0 = 全部通过；1 = 有失败项（逐条列出文件:行号）
 ```
 
 断言清单（全部**无需 JS 运行时**）：
 
-1. **区对区**比对（提取来源 = `plugin/core/browser.js` 的 **9 个** `BEGIN inlined file: <name>` … `END inlined file: <name>` 区间，**子串容错匹配**、不锚定装饰符/列位、单元名不写死 `\.js$`）：断言 `client.js` 的 `PM-CORE-INLINE` 区**内部**包含 9 个同名、逐行一致（去行首缩进/去空行后）、顺序一致的单元区；任一行不一致 ⇒ FAIL 并给出**首个不一致的行号**。**失败原因必须区分并给不同提示**（队长要求，避免排障变慢）：
+1. **区对区**比对（提取来源 = `core/browser.js` 的 **9 个** `BEGIN inlined file: <name>` … `END inlined file: <name>` 区间，**子串容错匹配**、不锚定装饰符/列位、单元名不写死 `\.js$`）：断言 `client.js` 的 `PM-CORE-INLINE` 区**内部**包含 9 个同名、逐行一致（去行首缩进/去空行后）、顺序一致的单元区；任一行不一致 ⇒ FAIL 并给出**首个不一致的行号**。**失败原因必须区分并给不同提示**（队长要求，避免排障变慢）：
    - 「`client.js` 里找不到 `PM-CORE-INLINE` 标记」⇒ 「client.js 装配未开始」；
    - 「标记在，但某单元区缺失 / 未闭合（8 个数据单元未以 `})(__pmCore);` 收尾、`bootstrap` 未以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾）」⇒ 「t3 未完成（缺单元 X）」；
    - 「9 区都在但内容与 `browser.js` 不一致」⇒ 「内联过期（首个不一致行号 N）」。
-   ⚠️ **不要**把「与 `plugin/core/*.js` 核心源文件不一致」判为失败——两者**语义同源但非逐行 1:1**（`.linecount.txt §1`）；`PM-CORE-INLINE` 只作 `client.js` 侧锚点，**不作为 `browser.js` 侧标记**使用；
-2. `PM-UI-INLINE` 区内容与各 `plugin/ui/*.js` 单元一致；
+   ⚠️ **不要**把「与 `core/*.js` 核心源文件不一致」判为失败——两者**语义同源但非逐行 1:1**（`.linecount.txt §1`）；`PM-CORE-INLINE` 只作 `client.js` 侧锚点，**不作为 `browser.js` 侧标记**使用；
+2. `PM-UI-INLINE` 区内容与各 `ui/*.js` 单元一致；
 3. 颜色：`client.js` 的 UI 区内出现 `#hex` / `rgb(` / `rgba(` / `hsl(` / `var(--t, …兜底)` 即失败；`var(--…)` 的参数必须落在 §D 的 14 个 token 白名单内；
 4. 硬规则：不出现 `raw.githubusercontent.com`；不出现 `import`/`export` 语句；不出现 JSX（`React.createElement` 之外无 `<Tag`）；
 5. `require(` 的参数集合 ⊆ `{react}`；
@@ -354,9 +354,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Js
 
 编码与运行形态（**verifier 反馈已采纳**）：
 - 🟥 `check-ui.ps1` 写成**纯 ASCII**（注释与输出用英文；中文说明放同名 `docs/check-ui.ps1.md`）。
-  **自证判据（任何人可复核）**：`grep path="plugin\ui\check-ui.ps1" pattern="[^\x00-\x7F]"` ⇒ **期望 0 命中**；
+  **自证判据（任何人可复核）**：`grep path="ui\check-ui.ps1" pattern="[^\x00-\x7F]"` ⇒ **期望 0 命中**；
   零命中 ⇒ 5.1「按 ANSI 解码无 BOM 的 .ps1」问题不存在，`-File` 直跑即可。
-- 运行命令（5.1 合法形式）：`powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1"`
+- 运行命令（5.1 合法形式）：`powershell -NoProfile -ExecutionPolicy Bypass -File "ui\check-ui.ps1"`
   （`-NoProfile` / `-ExecutionPolicy Bypass` / `-File` 均为合法参数）。
 - 兜底（⚠️ **均为 verifier 语法层面核对、未经本会话实测**，引用时必须同样标注）：
   A. 先转存为带 BOM 的 UTF-8 再跑：`[IO.File]::WriteAllText($dst, (Get-Content -LiteralPath $src -Raw -Encoding UTF8), (New-Object System.Text.UTF8Encoding($true)))` 然后 `-File $dst`；
@@ -372,9 +372,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Js
 
 | # | 待确认 | 我的默认实现 |
 |---|---|---|
-| 1 | `plugin/core/browser.js` 是否**九区齐全且各自闭合**（`BEGIN inlined file: <name>` / `END inlined file: <name>` 成对；8 个数据单元以 `})(__pmCore);` 收尾、`bootstrap` 以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾） | 判据按队长裁决：**九区齐全 = 可装配**；标记用**子串容错匹配**；不等 UMD 外壳/tail/`return`，不等已作废的 `PM-CORE-INLINE`。**一致性只与 `browser.js` 标记区比对**（去行首缩进/去空行），**不与 `plugin/core/*.js` 逐行比对**（语义同源非 1:1，见 `.linecount.txt §1`）。缺区即回报队长，绝不自行拼装 |
+| 1 | `core/browser.js` 是否**九区齐全且各自闭合**（`BEGIN inlined file: <name>` / `END inlined file: <name>` 成对；8 个数据单元以 `})(__pmCore);` 收尾、`bootstrap` 以 `})(typeof globalThis !== 'undefined' ? globalThis : this);` 收尾） | 判据按队长裁决：**九区齐全 = 可装配**；标记用**子串容错匹配**；不等 UMD 外壳/tail/`return`，不等已作废的 `PM-CORE-INLINE`。**一致性只与 `browser.js` 标记区比对**（去行首缩进/去空行），**不与 `core/*.js` 逐行比对**（语义同源非 1:1，见 `.linecount.txt §1`）。缺区即回报队长，绝不自行拼装 |
 | 2 | 浏览器侧 `store` 的 localStorage 键与 `readOnly` 降级行为 | 按 `storage.js` 现状：根键 `dsh-prompt-market:state`，未来版本/损坏 → 只读并常驻提示 |
-| 3 | `search()` 失败态字段清单 | 按 `plugin/core/api.js` 现状（`ok/items/total/errors[].{code,message,showable,degraded}/degraded/filterStats/sources`） |
+| 3 | `search()` 失败态字段清单 | 按 `core/api.js` 现状（`ok/items/total/errors[].{code,message,showable,degraded}/degraded/filterStats/sources`） |
 | 4 | `writeMode:'replace'` 的删除与迁移护栏（datasmith 侧） | 按 §5 裁决：`replace` 从取值域删除 + 加载时强制回落 `insert`；UI 不承担脏值清理。**另**：界面提供**条件「替换」动作**（非设置项）——覆盖率用**自适配提取**判定（只从捕获对象自身字段解范围，恰好 `[0, draft.length]` 才执行），解不出或不完整 ⇒ 提示 `PM_MSG_REPLACE_NEEDS_CTRL_A` 且**不写入**；§6 `spanProbe` 的实测形状用于校验该提取（该分支标 **未实测**，由 t8 验证） |
 
 ## 9. 验收项对照
@@ -399,7 +399,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Js
 
 ## 10. t4 实施记录、范围说明与冻结时刻（交付时补齐）
 
-### 10.1 交付物（全部在 t4 的 in-scope 路径 `plugin/ui/` 内）
+### 10.1 交付物（全部在 t4 的 in-scope 路径 `ui/` 内）
 
 | 文件 | 作用 |
 |---|---|
@@ -411,7 +411,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Js
 | `50-store.js` | 跨槽位模块级 store（按钮与面板是两棵 React 树） |
 | `60-components.js` | 错误边界 + 按钮 + 面板（四页签/搜索/分类/加载/空态/详情/自建增删改/源管理/过滤/署名/写入诊断） |
 | `70-entry.js` | `apply`/`inject`：注册 `conversation.input.left` 与 `conversation.input.overlay` 两个条目（各套错误边界） |
-| `80-client-shell.js` | **装配模板**（`plugin/client.js` 外壳骨架 + 两个内联标记区），非运行入口 |
+| `80-client-shell.js` | **装配模板**（`client.js` 外壳骨架 + 两个内联标记区），非运行入口 |
 | `check-ui.ps1` / `check-ui.md` | 无需 JS 运行时的静态自检脚本（纯 ASCII，退出码 0/1）与其中文说明 |
 
 ### 10.2 裁决落地位置（供评审核对）
@@ -429,18 +429,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Js
 
 ### 10.3 判据来源声明（队长裁决原话，消除歧义）
 
-> **产品写入通道的权威判据 = `plugin/ui/check-ui.ps1` 断言 A7 / A7f / A8；`docs/check-plugin.ps1` 仅覆盖 t2 试验/诊断路径，其 `setDraft` 优先断言不适用于产品面板。**
+> **产品写入通道的权威判据 = `ui/check-ui.ps1` 断言 A7 / A7f / A8；`docs/check-plugin.ps1` 仅覆盖 t2 试验/诊断路径，其 `setDraft` 优先断言不适用于产品面板。**
 
-### 10.4 范围说明（t4 in-scope = `plugin/ui/`）
+### 10.4 范围说明（t4 in-scope = `ui/`）
 
-- `plugin/client.js` 属 t2 产物、**不在 t4 的 in-scope 路径内** ⇒ 本任务**未改动**它；装配动作按 §10.5 移交。
-- `docs/check-ui.ps1` 的路径亦不在范围内 ⇒ 脚本交付在 `plugin/ui/check-ui.ps1`；若团队要统一放在 `docs/`，请由授权任务复制（逐字节相同即可）。
-- `plugin/README.md` 的「写入一律走 `lib/write-draft.js`」**收窄动作未做**（超出 `plugin/ui/`）⇒ 需队长指派；`plugin/core/**` 一字未动。
+- `client.js` 属 t2 产物、**不在 t4 的 in-scope 路径内** ⇒ 本任务**未改动**它；装配动作按 §10.5 移交。
+- `docs/check-ui.ps1` 的路径亦不在范围内 ⇒ 脚本交付在 `ui/check-ui.ps1`；若团队要统一放在 `docs/`，请由授权任务复制（逐字节相同即可）。
+- `docs/DEVELOPMENT.md` 的「写入一律走 `lib/write-draft.js`」**收窄动作未做**（超出 `ui/`）⇒ 需队长指派；`core/**` 一字未动。
 - 结论分栏：**静态已核对** = `check-ui.ps1` 的全部 FAIL 级检查 + 会话内 `grep` 复核；**运行时未实测** = 按钮可见性、面板开合、草稿真实入框、Ctrl+Z 可撤销、持久化、断网降级、探针三元结论（由 t8 承接）。
 
 ### 10.5 装配移交（8 + 9 → 1）
 
-1. 以 `80-client-shell.js` 为外壳：`PM-CORE-INLINE` 区填 `plugin/core/browser.js` 的 **9 个单元体**，`PM-UI-INLINE` 区按序填 `00-core.js … 70-entry.js` **8 个单元**（均原样顶格）；
+1. 以 `80-client-shell.js` 为外壳：`PM-CORE-INLINE` 区填 `core/browser.js` 的 **9 个单元体**，`PM-UI-INLINE` 区按序填 `00-core.js … 70-entry.js` **8 个单元**（均原样顶格）；
 2. 每填一个单元后 `client.js` 必须仍是合法 JS（link 安装 ⇒ 下次启动即生效）；
 3. 装配后重跑 `check-ui.ps1`：A13/A14 由 INFO 变为真实逐行比对（不一致会给出首个差异行号）。
 
@@ -450,7 +450,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "plugin\ui\check-ui.ps1" -Js
 
 | 项 | 记录 |
 |---|---|
-| 触及文件 | 仅 `plugin/ui/60-components.js`（源）；`plugin/client.js` 本级**未手工改**，改由重新装配生成 |
+| 触及文件 | 仅 `ui/60-components.js`（源）；`client.js` 本级**未手工改**，改由重新装配生成 |
 | 重写范围 | ① 列表块（原 371–400，三层嵌套三元 → `if/else if/else` + `for` + 逐行 `listKids.push`）；② 源管理整条链（原 429–522 → `srcHead` + 逐源 `srcRows.push(buildSourceRow(...))` + `buildAddSourceBox/buildCacheBox/buildFilterBox/buildAdvancedBox` + 一行容器）；③ 尾部四块（原 546–577 → 一行一个 `children.push(...)`）；④ 另 8 处行尾 ≥3 闭括号（后端徽标 / 过滤开关 / 署名块 / 详情块 / 分页 / 编辑对话框 / 高级区 kv / 详情 kv） |
 | 硬规则判据 | 「行尾连续 **≥3** 个 `)`」才算违规（队长确认）；`x.push(y(...));` 末尾的 2 个闭合属必然形态，**不得**为此拆行（拆成 `var x=…; kids.push(x)` 会多约 60 行、收益为零） |
 | 改前统计 | 行尾 ≥3 闭括号：**11 处**（列表块收尾、源管理链 510/524/540/601/608/644、以及 313/327/343/419/426） |

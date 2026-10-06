@@ -175,13 +175,13 @@ flowchart TD
 ### Option 1: Command line (recommended)
 
 ```cmd
-dsh plugin --profile desktop add "<本仓库路径>\plugin"
+dsh plugin --profile desktop add "<本仓库路径>"
 ```
 
 If `dsh` isn't on your PATH, use the shim inside the DSH installation directory:
 
 ```cmd
-"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>\plugin"
+"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>"
 ```
 
 ### Option 2: The GUI
@@ -191,7 +191,7 @@ In DSH, open **Settings → Plugins** and enter the path to this repository's `p
 ### Option 3: Symlink (developers)
 
 ```cmd
-mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>\plugin"
+mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
 ```
 
 After that, changing the code **only needs a DSH restart — no reinstall**.
@@ -353,21 +353,31 @@ Not automatically (`localStorage` is independent of the plugin). To wipe them cl
 ## Directory Structure
 
 ```
-plugin/                      ← 安装目标（DSH 只加载这里）
-├── package.json             包元数据：dsh.bundle.patch + dsh.client
-├── cordis.patch.yml         profile 层补丁（一行 insert 挂载本插件）
-├── index.js                 Host 半身（ESM）
-├── client.js                ★ 浏览器半身（装配产物，DSH 唯一加载的客户端入口）
-├── core/                    数据层
-│   ├── *.js                 9 个可独立阅读的单元
-│   ├── browser.js           浏览器半身成品源码（免构建，可直接内联）
-│   ├── selftest-node.js     数据层自检（Node 运行）
-│   └── check-data-layer.ps1 静态自检（无需 JS 运行时）
-├── ui/                      界面层
-│   ├── 00-core.js … 80-client-shell.js
-│   ├── check-ui.ps1         界面静态自检
-│   └── DESIGN.md            界面设计契约
-└── lib/write-draft.js       低层写入封装（仅探针 / 诊断用）
+(The repository root IS the package root — this is where pnpm looks for package.json)
+
+package.json                 package metadata: dsh.bundle.patch + dsh.client
+cordis.patch.yml             profile-layer patch (a single insert mounts this plugin)
+index.js                     Host half (ESM)
+client.js                    ★ browser half (assembled artifact — the only client entry DSH loads)
+core/                        data layer
+├── *.js                     9 independently readable units
+├── browser.js                browser-half source (no build step; inlined verbatim)
+├── selftest-node.js          data-layer self-test (runs under Node)
+└── check-data-layer.ps1      static self-test (no JS runtime needed)
+ui/                          interface layer
+├── 00-core.js … 80-client-shell.js
+├── check-ui.ps1              static UI self-test
+└── DESIGN.md                 UI design contract
+lib/write-draft.js           low-level write wrapper (probes / diagnostics only)
+
+README.md / README-en.md / README-ja.md     documentation (3 languages)
+docs/DEVELOPMENT.md          development & assembly notes
+docs/images/                 screenshots
+CHANGELOG.md                 changelog
+CONTRIBUTING.md              contributing guide
+THIRD-PARTY-NOTICES.md       upstream licences & attribution
+LICENSE                      MIT
+.github/ISSUE_TEMPLATE/      issue templates
 ```
 
 ### Why there is no build step
@@ -385,19 +395,19 @@ The UI code is hand-written in the `window.__ModuleLoader__.load({ id, factory }
 node diag-syntax.js
 
 :: 权威判据：装配区段 ↔ browser.js 单元区段，逐行一致
-node plugin/core/build-client-bundle.js --check
+node core/build-client-bundle.js --check
 
 :: 数据层自检（真跑算法）
-node plugin/core/selftest-node.js
+node core/selftest-node.js
 
 :: 界面静态自检
-powershell -NoProfile -ExecutionPolicy Bypass -File plugin/ui/check-ui.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
 ```
 
 > ⚠️ **The consistency check only ever compares section against section**: the `PM-CORE-INLINE` section of
 > `client.js` ↔ the unit sections of `browser.js`, line by line (ignoring leading indentation and blank lines).
 > **Do not** diff the whole `client.js` against the whole `browser.js` (the former is an assembled artifact that also contains the shell and UI sections, so their lengths are unrelated from the start),
-> and **do not** diff `browser.js` against `plugin/core/*.js` (the unit bodies are a trimmed rewrite, so a line-by-line diff is guaranteed to produce false positives).
+> and **do not** diff `browser.js` against `core/*.js` (the unit bodies are a trimmed rewrite, so a line-by-line diff is guaranteed to produce false positives).
 
 ---
 
@@ -443,7 +453,7 @@ The conditional **Replace** action
 |---|---|
 | L1 | `selftest-node.js` includes one ~78-second case (the production default timeout budget isn't injectable, and the core was left untouched) |
 | L2 | A few self-check assertions need a re-run to settle in environments without `localStorage` |
-| L3 | `plugin/client.js` keeps 2 placeholder comment lines from the assembly template, so the UI self-check `A14` reports a **WARN** (not a FAIL, no functional impact) |
+| L3 | `client.js` keeps 2 placeholder comment lines from the assembly template, so the UI self-check `A14` reports a **WARN** (not a FAIL, no functional impact) |
 | L4 | "Replace the whole draft" depends on you selecting it with `Ctrl+A` — a boundary of the DSH `InputActions` interface |
 
 ---

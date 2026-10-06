@@ -35,7 +35,7 @@ git clone https://github.com/yi-yezhiqiu/dsh-prompt-market.git
 cd dsh-prompt-market
 
 :: 软链接安装（改代码只需重启 DSH，不用重装）
-mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>\plugin"
+mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
 ```
 
 安装后**完全退出并重新打开 DSH**。
@@ -44,10 +44,10 @@ mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>\plug
 
 ```cmd
 node diag-syntax.js                                    :: 全部 .js 语法
-node plugin/core/build-client-bundle.js --check        :: 装配区段一致性（权威判据）
-node plugin/core/selftest-node.js                      :: 数据层算法自检
-powershell -NoProfile -ExecutionPolicy Bypass -File plugin/ui/check-ui.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File plugin/core/check-data-layer.ps1
+node core/build-client-bundle.js --check        :: 装配区段一致性（权威判据）
+node core/selftest-node.js                      :: 数据层算法自检
+powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File core/check-data-layer.ps1
 ```
 
 > ⏱ `selftest-node.js` 里有一条约 **78 秒**的用例（生产默认超时预算不可注入所致），属已知限制 L1。
@@ -58,7 +58,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File plugin/core/check-data-layer
 
 ### 坑一：改了源码，忘了重新装配
 
-`plugin/client.js` 是**装配产物**（`core/browser.js` 的 9 个单元 + `ui/` 的 8 个单元）。
+`client.js` 是**装配产物**（`core/browser.js` 的 9 个单元 + `ui/` 的 8 个单元）。
 改 `core/` 或 `ui/` 之后必须重新装配，否则 DSH 加载的还是旧代码。
 
 **装配后一定要跑 `build-client-bundle.js --check`** —— 它比对的是「区段对区段」，这是唯一权威判据。
@@ -66,7 +66,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File plugin/core/check-data-layer
 ### 坑二：拿整文件去比对
 
 - ❌ `client.js` 整文件 ↔ `browser.js` 整文件 —— 前者是装配产物、含壳层与 UI 区，**长度本就无关**
-- ❌ `browser.js` ↔ `plugin/core/*.js` —— 单元体是**精简重写版**，逐行 diff **必然误报**
+- ❌ `browser.js` ↔ `core/*.js` —— 单元体是**精简重写版**，逐行 diff **必然误报**
 - ✅ 只比 **区段**：`client.js` 的 `PM-CORE-INLINE` 区段 ↔ `browser.js` 的单元区段
 
 ### 坑三：在注释里写出会导致解析出错的字面量
@@ -87,8 +87,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File plugin/core/check-data-layer
 
 1. **一个 PR 只做一件事** —— 便于审阅，也便于回退
 2. **跑一遍自检**，并把**实际输出**贴进 PR 描述（不是「应该没问题」）
-3. **新增或改动功能时，同步更新文档**：`README.md`、`plugin/ui/DESIGN.md`、`plugin/core/.linecount.txt`
-4. **改动了行号，就刷新台账** `plugin/core/.linecount.txt`
+3. **新增或改动功能时，同步更新文档**：`README.md`、`ui/DESIGN.md`、`core/.linecount.txt`
+4. **改动了行号，就刷新台账** `core/.linecount.txt`
 5. 提交信息说清**为什么**，而不只是**改了什么**
 
 ### 改了用户可见行为

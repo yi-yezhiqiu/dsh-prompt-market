@@ -1,4 +1,4 @@
-# plugin/core · 提示词市场数据层
+# core · 提示词市场数据层
 
 本目录是 **t3（datasmith）** 的交付物：数据源适配器、在线拉取与降级、本地持久化、
 内容过滤、许可署名、JSON 导入导出。
@@ -8,7 +8,7 @@
 
 ## 给 t-ui（uismith）的一句话
 
-> **把 `plugin/core/browser.js` 的全部内容原样、顶格放进 `plugin/client.js` 即可，
+> **把 `core/browser.js` 的全部内容原样、顶格放进 `client.js` 即可，
 > 无需任何构建步骤。** 执行后 `globalThis.__pmCore` 就是数据层：
 > `__pmCore.getMarket()` + `market.init()` + `market.search({tab:'market'})`。
 
@@ -55,12 +55,12 @@ const page = await market.search({ tab: 'market', q: '', page: 1 });
 
 ```text
 # A) 不需要任何 JS 运行时（本机只有 Windows PowerShell 5.1，无 pwsh）
-powershell -NoProfile -ExecutionPolicy Bypass -File "…\plugin\core\check-data-layer.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "…\core\check-data-layer.ps1"
 # B) 需要 Node（用户反馈本机 node = D:\nodejs\node.exe v24.19.0）
-node "…\plugin\core\selftest-node.js"
+node "…\core\selftest-node.js"
 # C) 可选看护
-node "…\plugin\core\assemble-browser.js" --verify
-node "…\plugin\core\build-client-bundle.js" --check
+node "…\core\assemble-browser.js" --verify
+node "…\core\build-client-bundle.js" --check
 ```
 
 退出码均为 `0 = 通过 / 1 = 有失败项`。

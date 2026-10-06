@@ -1,9 +1,9 @@
 /* =============================================================================
- * plugin/core/assemble-browser.js — 【可选工具】由核心文件拼装 plugin/core/browser.js
+ * core/assemble-browser.js — 【可选工具】由核心文件拼装 core/browser.js
  * =============================================================================
  * ⚠️ 不是插件可用性的前置条件：
- *    `plugin/core/browser.js` 已经落盘并自包含（9 个单元 + 头 + 尾）。
- *    本脚本只在「改了 plugin/core/*.js 需要重新生成 browser.js」或
+ *    `core/browser.js` 已经落盘并自包含（9 个单元 + 头 + 尾）。
+ *    本脚本只在「改了 core/*.js 需要重新生成 browser.js」或
  *    「想校验 browser.js 是否与核心文件一致」时使用。
  *
  * ⚠️ 命令未实测：本会话（队内）没有任何命令执行面（pwsh 返回
@@ -11,9 +11,9 @@
  *    因此下面这些命令**尚未在任何真实终端跑过**，属「未实测」。
  *
  * 用法（用户终端，未实测）：
- *   node "…\plugin\core\assemble-browser.js"            # 生成/覆盖 browser.js
- *   node "…\plugin\core\assemble-browser.js" --verify   # 只校验，不改文件
- *   node "…\plugin\core\assemble-browser.js" --list     # 只打印单元清单与行数
+ *   node "…\core\assemble-browser.js"            # 生成/覆盖 browser.js
+ *   node "…\core\assemble-browser.js" --verify   # 只校验，不改文件
+ *   node "…\core\assemble-browser.js" --list     # 只打印单元清单与行数
  *
  * 退出码：0 = 成功/一致；1 = 失败/不一致。
  *
@@ -38,21 +38,21 @@ const CORE_UNITS = ['constants.js', 'text.js', 'filter.js', 'storage.js', 'norma
 const UNIT_NAMES = CORE_UNITS.concat(['bootstrap']);
 
 const HEADER = `/* =============================================================================
- * plugin/core/browser.js — 提示词市场 · 数据层【浏览器半身成品源码】（免构建）
+ * core/browser.js — 提示词市场 · 数据层【浏览器半身成品源码】（免构建）
  * =============================================================================
  * 这是什么
  *   DSH 桌面端「提示词市场」插件的数据层，**可直接被浏览器执行、可直接内联**的
  *   自包含纯 JS 模块。零 require、零相对路径、零构建步骤、零外部依赖。
  *
  * 怎么用（t-ui / uismith 必读）
- *   把本文件**全部内容原样、顶格**放进 \`plugin/client.js\`（放在
+ *   把本文件**全部内容原样、顶格**放进 \`client.js\`（放在
  *   window.__ModuleLoader__.load({ ... factory: require => { ... } }) 的 factory 里，
  *   或直接放在该 load 调用之前）。**不需要任何构建步骤，也不需要跑任何脚本。**
  *   执行后 globalThis.__pmCore 即数据层；也可用 globalThis.__pmCore.getMarket()。
  *
  *   可选看护工具（**不是前置条件**）：
- *     node "plugin/core/assemble-browser.js" --verify     # 校验本文件与核心文件一致
- *     node "plugin/core/build-client-bundle.js" --check   # 校验 client.js 内联内容与本文件一致
+ *     node "core/assemble-browser.js" --verify     # 校验本文件与核心文件一致
+ *     node "core/build-client-bundle.js" --check   # 校验 client.js 内联内容与本文件一致
  *   上述命令在本会话**未实测**（队内无命令执行面），仅作出厂前自检建议。
  *
  * 三条硬约束（改本文件前必读）
@@ -74,7 +74,7 @@ const HEADER = `/* =============================================================
  *   bootstrap        把命名空间挂到 globalThis.__pmCore，并给出便捷方法名
  *
  *   每对 \`BEGIN inlined file: <name>\` / \`END inlined file: <name>\` 标记对应一个单元；
- *   各单元的行数登记在 \`plugin/core/.linecount.txt\`（不在本文件里重复写数字，
+ *   各单元的行数登记在 \`core/.linecount.txt\`（不在本文件里重复写数字，
  *   避免两处数字漂移）。
  * ========================================================================== */
 `;
@@ -236,7 +236,7 @@ async function build() {
       /* bootstrap 没有核心文件；它的说明头已在 BOOTSTRAP 常量里 */
       chunks.push(body);
     } else {
-      /* 核心文件的头注释里写的是 `plugin/core/<name>.js`；保持原样即可（便于区对区比对） */
+      /* 核心文件的头注释里写的是 `core/<name>.js`；保持原样即可（便于区对区比对） */
       chunks.push(body);
     }
     chunks.push('/* END inlined file: ' + unit + ' */');

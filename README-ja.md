@@ -174,13 +174,13 @@ flowchart TD
 ### 方法 1：コマンドライン（推奨）
 
 ```cmd
-dsh plugin --profile desktop add "<本仓库路径>\plugin"
+dsh plugin --profile desktop add "<本仓库路径>"
 ```
 
 `dsh` が PATH に通っていない場合は、DSH のインストールディレクトリにあるシムを使います：
 
 ```cmd
-"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>\plugin"
+"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>"
 ```
 
 ### 方法 2：GUI
@@ -190,7 +190,7 @@ DSH の**設定 → プラグイン**ページで、本リポジトリの `plugi
 ### 方法 3：シンボリックリンク（開発者向け）
 
 ```cmd
-mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>\plugin"
+mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
 ```
 
 コードを変更した後は、**DSH を再起動するだけでよく、再インストールは不要**です。
@@ -352,21 +352,31 @@ https://cdn.jsdelivr.net/gh/<用户名>/<仓库名>@main/<文件路径>.json
 ## ディレクトリ構成
 
 ```
-plugin/                      ← 安装目标（DSH 只加载这里）
-├── package.json             包元数据：dsh.bundle.patch + dsh.client
-├── cordis.patch.yml         profile 层补丁（一行 insert 挂载本插件）
-├── index.js                 Host 半身（ESM）
-├── client.js                ★ 浏览器半身（装配产物，DSH 唯一加载的客户端入口）
-├── core/                    数据层
-│   ├── *.js                 9 个可独立阅读的单元
-│   ├── browser.js           浏览器半身成品源码（免构建，可直接内联）
-│   ├── selftest-node.js     数据层自检（Node 运行）
-│   └── check-data-layer.ps1 静态自检（无需 JS 运行时）
-├── ui/                      界面层
-│   ├── 00-core.js … 80-client-shell.js
-│   ├── check-ui.ps1         界面静态自检
-│   └── DESIGN.md            界面设计契约
-└── lib/write-draft.js       低层写入封装（仅探针 / 诊断用）
+（リポジトリのルートがそのままパッケージのルートです — pnpm はここで package.json を探します）
+
+package.json                 パッケージメタデータ：dsh.bundle.patch + dsh.client
+cordis.patch.yml             profile レイヤーのパッチ（1 行の insert で本プラグインを登録）
+index.js                     Host 側（ESM）
+client.js                    ★ ブラウザ側（組み立て済み成果物。DSH が読み込む唯一のクライアント入口）
+core/                        データ層
+├── *.js                     独立して読める 9 つのユニット
+├── browser.js               ブラウザ側のソース（ビルド不要・そのまま内聯できる）
+├── selftest-node.js         データ層のセルフテスト（Node で実行）
+└── check-data-layer.ps1     静的セルフテスト（JS ランタイム不要）
+ui/                          画面層
+├── 00-core.js … 80-client-shell.js
+├── check-ui.ps1              画面の静的セルフテスト
+└── DESIGN.md                 画面の設計契約
+lib/write-draft.js           低レベル書き込みラッパー（プローブ／診断専用）
+
+README.md / README-en.md / README-ja.md     ドキュメント（3 言語）
+docs/DEVELOPMENT.md          開発と組み立ての説明
+docs/images/                 スクリーンショット
+CHANGELOG.md                 変更履歴
+CONTRIBUTING.md              コントリビュートガイド
+THIRD-PARTY-NOTICES.md       上流のライセンスとクレジット
+LICENSE                      MIT
+.github/ISSUE_TEMPLATE/      issue テンプレート
 ```
 
 ### ビルド手順が不要な理由
@@ -386,19 +396,19 @@ plugin/                      ← 安装目标（DSH 只加载这里）
 node diag-syntax.js
 
 :: 权威判据：装配区段 ↔ browser.js 单元区段，逐行一致
-node plugin/core/build-client-bundle.js --check
+node core/build-client-bundle.js --check
 
 :: 数据层自检（真跑算法）
-node plugin/core/selftest-node.js
+node core/selftest-node.js
 
 :: 界面静态自检
-powershell -NoProfile -ExecutionPolicy Bypass -File plugin/ui/check-ui.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
 ```
 
 > ⚠️ **一貫性の判定は「区画対区画」でのみ行います**：`client.js` の `PM-CORE-INLINE` 区画 ↔
 > `browser.js` のユニット区画が、行単位で一致していること（行頭のインデントと空行は無視）。
 > **`client.js` のファイル全体と `browser.js` のファイル全体を比べてはいけません**（前者はアセンブル成果物で、シェル層と UI 区画を含むため、長さが違うのは当然です）。
-> また、**`browser.js` と `plugin/core/*.js` を比べてもいけません**（ユニット本体は簡略化して書き直した版なので、行単位の diff は必ず誤検知になります）。
+> また、**`browser.js` と `core/*.js` を比べてもいけません**（ユニット本体は簡略化して書き直した版なので、行単位の diff は必ず誤検知になります）。
 
 ---
 
@@ -444,7 +454,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File plugin/ui/check-ui.ps1
 |---|---|
 | L1 | `selftest-node.js` に約 78 秒かかるテストケースが 1 件ある（本番の既定タイムアウト予算は注入できず、コア側は変更していない） |
 | L2 | 一部のセルフチェックのアサーションは、`localStorage` が無い環境では再実行して確定させる必要がある |
-| L3 | `plugin/client.js` にアセンブル用テンプレートのプレースホルダコメントが 2 行残っており、画面セルフチェックの `A14` が **WARN** を報告する（FAIL ではなく、機能への影響もない） |
+| L3 | `client.js` にアセンブル用テンプレートのプレースホルダコメントが 2 行残っており、画面セルフチェックの `A14` が **WARN** を報告する（FAIL ではなく、機能への影響もない） |
 | L4 | 「まるごと置換」はユーザー自身の `Ctrl+A` に依存 —— DSH の `InputActions` インターフェースの境界による制約 |
 
 ---

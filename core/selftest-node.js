@@ -1,9 +1,9 @@
 /* =============================================================================
- * plugin/core/selftest-node.js — 数据层自检（Node 侧，**真跑算法**）
+ * core/selftest-node.js — 数据层自检（Node 侧，**真跑算法**）
  * =============================================================================
  * 运行（用户终端，本机已实测有 node v24.19.0）：
- *   node "plugin/core/selftest-node.js"            （在仓库根目录运行）
- *   node "plugin/core/selftest-node.js" --verbose
+ *   node "core/selftest-node.js"            （在仓库根目录运行）
+ *   node "core/selftest-node.js" --verbose
  *
  * 退出码：0 = 全部通过；1 = 存在失败项。输出逐项 `[PASS]/[FAIL]`。
  *
@@ -515,8 +515,8 @@ async function main() {
      输入 '<b>粗</b>体' 期望去掉标签后得到 '粗体'，修前实得 '粗 体'。
      根因：`stripTags` 的 c3 分支 `out.replace(/<\/?[a-zA-Z][^>]*>/g, ' ')` 把**每一个**标签
      都替换成空格 ⇒ 相邻行内标签（<b>粗</b>体）移除后留下多余空格。
-     t22 已改为整体删除（`''`）：`plugin/core/text.js:150` 与 `plugin/core/browser.js:680`
-     （装配产物 `plugin/client.js:661` 需重新装配后才带上此修）。
+     t22 已改为整体删除（`''`）：`core/text.js:150` 与 `core/browser.js:680`
+     （装配产物 `client.js:661` 需重新装配后才带上此修）。
      断言在实现修好后应自然转绿；本断言**未被放宽**。 */
   check('custom:updated-sanitized', upd.ok === true && upd.item.title === '改名了' && upd.item.content === '粗体',
     '实际 ' + JSON.stringify(upd.item && upd.item.content) + '（期望 "粗体"；t22 前多余空格来自 stripTags 的 c3 替换）');
@@ -831,7 +831,7 @@ async function main() {
     check('license:list-2+', lic.licenses.length >= 2, lic.licenses.map((x) => x.id).join(','));
     const mit = lic.licenses.filter((x) => x.id === 'MIT')[0];
     /* t26 分诊（**期望值错误 + 空值保护缺失**）：
-       ① `licenses.list()` 发布的字段是 **`fullText`**（见 `plugin/core/api.js:802` = `fullText: l.text`），
+       ① `licenses.list()` 发布的字段是 **`fullText`**（见 `core/api.js:802` = `fullText: l.text`），
           **不是 `text`** —— 旧断言写 `mit.text.indexOf(...)` ⇒ `mit.text === undefined` ⇒
           `TypeError: Cannot read properties of undefined (reading 'indexOf')`，脚本崩在本行（用户第二次实跑）。
        ② 修正为 `fullText`（这是「断言取错字段名」，不是放宽：仍然要求 MIT 正文含

@@ -1,11 +1,11 @@
 /* =============================================================================
- * plugin/core/build-client-bundle.js — 【可选看护工具 · 非必需】client.js 装配核对
+ * core/build-client-bundle.js — 【可选看护工具 · 非必需】client.js 装配核对
  * =============================================================================
- * ⚠️ 定位：本脚本**不是**插件可用性的前置条件。`plugin/core/browser.js` 本身就是
+ * ⚠️ 定位：本脚本**不是**插件可用性的前置条件。`core/browser.js` 本身就是
  *    免构建、可直接内联的成品源码；不跑本脚本，只要内联内容正确，插件照样工作。
  *
  * 标记的两个层级（**不要再混为一谈** —— v2 修正点之一）：
- *   层级 1 · 外壳区段界定符（来自 `plugin/ui/80-client-shell.js` 模板，**必须存在**）：
+ *   层级 1 · 外壳区段界定符（来自 `ui/80-client-shell.js` 模板，**必须存在**）：
  *     `PM-CORE-INLINE:BEGIN/END`、`PM-UI-INLINE:BEGIN/END`
  *   层级 2 · 单元边界标记（位于区段**内部**，9 个数据单元各一对）：
  *     `BEGIN inlined file: <name>` / `END inlined file: <name>`
@@ -14,7 +14,7 @@
  * `--check` 做什么（v2 修正后的行为）：
  *   1. 先取 client.js 的 `PM-CORE-INLINE` **区段**（**不是**从文件头开始）；
  *   2. 再在该区段内取「首 `BEGIN inlined file:` → 末 `END inlined file:`」= 数据层内容；
- *   3. 与 `plugin/core/browser.js` 的同一区段做**去缩进/去空行**后的逐行比对；
+ *   3. 与 `core/browser.js` 的同一区段做**去缩进/去空行**后的逐行比对；
  *   4. 计数与"首个不一致"**全部基于这两个区段**
  *      （v1 缺陷：拿区段长度与**整文件**长度做比、并把整文件第 1 行报成"首个不一致"，
  *       两个数字不可比 ⇒ 即便内容一致也会给出误导性结论）。
@@ -22,7 +22,7 @@
  * 退出码：0 = 区段一致（或装配尚未开始）；1 = 不一致 / 文件缺失。
  * ⚠️ 只读：本脚本不写任何文件。
  * ⚠️ 命令未实测：本会话无命令执行面（见 docs/ENV-01 §1.1），下面这行命令**尚未实跑**：
- *     node "plugin/core/build-client-bundle.js" --check      （在仓库根目录运行）
+ *     node "core/build-client-bundle.js" --check      （在仓库根目录运行）
  * ========================================================================== */
 
 import { readFile } from 'node:fs/promises';
@@ -128,7 +128,7 @@ async function main() {
   if (!shellCoreOk) {
     process.stderr.write('[pm-core] 提示: client.js 缺少外壳区段界定符 '
       + SHELL_CORE_BEGIN + ' / ' + SHELL_CORE_END
-      + '（来自 plugin/ui/80-client-shell.js），无法判定装配是否完整。\n');
+      + '（来自 ui/80-client-shell.js），无法判定装配是否完整。\n');
     process.stderr.write('  注意：它与层级 2 的单元标记 `' + UNIT_BEGIN
       + '<name>` 是两个层级，需要同时存在；二者不冲突。\n');
   }
@@ -197,7 +197,7 @@ async function main() {
   process.stderr.write('  区段行数：期望 ' + expLines + ' / 实得 ' + gotLines
     + '（两个数字都取自**区段**，与整文件行数不可比 —— v2 修正点）\n');
   reportFirstDiff(expected, got);
-  process.stderr.write('  修复：把 plugin/core/browser.js 的全部内容原样重新放入 PM-CORE-INLINE 区段。\n');
+  process.stderr.write('  修复：把 core/browser.js 的全部内容原样重新放入 PM-CORE-INLINE 区段。\n');
   return 1;
 }
 

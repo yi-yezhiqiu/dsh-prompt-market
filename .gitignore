@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------
 # dsh-prompt-market / .gitignore
 #
-# NOTE: plugin/client.js IS intentionally committed.
+# NOTE: client.js IS intentionally committed.
 #   This plugin has NO build step — the assembled browser half is the shipped
 #   artifact (the same convention third-party DSH plugins follow). Do not add
 #   it here.

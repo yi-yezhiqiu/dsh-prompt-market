@@ -175,13 +175,13 @@ flowchart TD
 ### 方式一：命令行（推荐）
 
 ```cmd
-dsh plugin --profile desktop add "<本仓库路径>\plugin"
+dsh plugin --profile desktop add "<本仓库路径>"
 ```
 
 `dsh` 不在 PATH 时，用 DSH 安装目录下的垫片：
 
 ```cmd
-"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>\plugin"
+"<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<本仓库路径>"
 ```
 
 ### 方式二：图形界面
@@ -191,7 +191,7 @@ dsh plugin --profile desktop add "<本仓库路径>\plugin"
 ### 方式三：软链接（开发者）
 
 ```cmd
-mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>\plugin"
+mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<本仓库路径>"
 ```
 
 改代码后**只需重启 DSH，不用重装**。
@@ -353,21 +353,31 @@ https://cdn.jsdelivr.net/gh/<用户名>/<仓库名>@main/<文件路径>.json
 ## 目录结构
 
 ```
-plugin/                      ← 安装目标（DSH 只加载这里）
-├── package.json             包元数据：dsh.bundle.patch + dsh.client
-├── cordis.patch.yml         profile 层补丁（一行 insert 挂载本插件）
-├── index.js                 Host 半身（ESM）
-├── client.js                ★ 浏览器半身（装配产物，DSH 唯一加载的客户端入口）
-├── core/                    数据层
-│   ├── *.js                 9 个可独立阅读的单元
-│   ├── browser.js           浏览器半身成品源码（免构建，可直接内联）
-│   ├── selftest-node.js     数据层自检（Node 运行）
-│   └── check-data-layer.ps1 静态自检（无需 JS 运行时）
-├── ui/                      界面层
-│   ├── 00-core.js … 80-client-shell.js
-│   ├── check-ui.ps1         界面静态自检
-│   └── DESIGN.md            界面设计契约
-└── lib/write-draft.js       低层写入封装（仅探针 / 诊断用）
+（仓库根目录就是插件包根 —— pnpm 会在这里找 package.json）
+
+package.json                 包元数据：dsh.bundle.patch + dsh.client
+cordis.patch.yml             profile 层补丁（一行 insert 挂载本插件）
+index.js                     Host 半身（ESM）
+client.js                    ★ 浏览器半身（装配产物，DSH 唯一加载的客户端入口）
+core/                        数据层
+├── *.js                     9 个可独立阅读的单元
+├── browser.js               浏览器半身成品源码（免构建，可直接内联）
+├── selftest-node.js         数据层自检（Node 运行）
+└── check-data-layer.ps1     静态自检（无需 JS 运行时）
+ui/                          界面层
+├── 00-core.js … 80-client-shell.js
+├── check-ui.ps1             界面静态自检
+└── DESIGN.md                界面设计契约
+lib/write-draft.js           低层写入封装（仅探针 / 诊断用）
+
+README.md / README-en.md / README-ja.md     三语文档
+docs/DEVELOPMENT.md          开发与装配说明
+docs/images/                 截图
+CHANGELOG.md                 更新日志
+CONTRIBUTING.md              贡献指南
+THIRD-PARTY-NOTICES.md       上游许可与署名
+LICENSE                      MIT
+.github/ISSUE_TEMPLATE/      issue 模板
 ```
 
 ### 为什么可以没有构建步骤
@@ -387,19 +397,19 @@ plugin/                      ← 安装目标（DSH 只加载这里）
 node diag-syntax.js
 
 :: 权威判据：装配区段 ↔ browser.js 单元区段，逐行一致
-node plugin/core/build-client-bundle.js --check
+node core/build-client-bundle.js --check
 
 :: 数据层自检（真跑算法）
-node plugin/core/selftest-node.js
+node core/selftest-node.js
 
 :: 界面静态自检
-powershell -NoProfile -ExecutionPolicy Bypass -File plugin/ui/check-ui.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
 ```
 
 > ⚠️ **一致性判据只看「区段对区段」**：`client.js` 的 `PM-CORE-INLINE` 区段 ↔
 > `browser.js` 的单元区段，逐行一致（忽略行首缩进与空行）。
 > **不要**拿 `client.js` 整文件去比 `browser.js` 整文件（前者是装配产物、含壳层与 UI 区，长度本就无关），
-> 也**不要**拿 `browser.js` 去比 `plugin/core/*.js`（单元体是精简重写版，逐行 diff 必然误报）。
+> 也**不要**拿 `browser.js` 去比 `core/*.js`（单元体是精简重写版，逐行 diff 必然误报）。
 
 ---
 
@@ -444,7 +454,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File plugin/ui/check-ui.ps1
 |---|---|
 | L1 | `selftest-node.js` 含一条约 78 秒的用例（生产默认超时预算不可注入，未改核心） |
 | L2 | 个别自检断言在缺少 `localStorage` 的环境下需复跑定案 |
-| L3 | `plugin/client.js` 保留 2 行装配模板占位注释，界面自检 `A14` 报 **WARN**（非 FAIL，无功能影响） |
+| L3 | `client.js` 保留 2 行装配模板占位注释，界面自检 `A14` 报 **WARN**（非 FAIL，无功能影响） |
 | L4 | 「替换整段」依赖用户手动 `Ctrl+A` —— 受 DSH `InputActions` 接口边界限制 |
 
 ---

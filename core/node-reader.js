@@ -1,8 +1,8 @@
 /* =============================================================================
- * plugin/core/node-reader.js — 仅 Node 可用的源码读取器
+ * core/node-reader.js — 仅 Node 可用的源码读取器
  * =============================================================================
  * ⚠️ 本文件**只在 Node（Host 半身 / verifier / 静态自检）侧被动态 import**：
- *     plugin/core/index.js 用 `await import('./node-reader.js')` 调用它。
+ *     core/index.js 用 `await import('./node-reader.js')` 调用它。
  *     浏览器侧永远不会解析到这一行（那条 import 是动态的，且被 try/catch 包住），
  *     因此浏览器半身不需要、也无法加载本文件。
  *

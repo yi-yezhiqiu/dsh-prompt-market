@@ -172,32 +172,56 @@ flowchart TD
 - The DeepSeek Harness desktop app
 - The plugin **needs no Node at runtime** (Node is only required for the development self-checks)
 
+### ⚠️ First: are you typing into the **dialog**, or running a **terminal** command?
+
+The two take **different things**:
+
+| Where | What to enter |
+|---|---|
+| DSH's **Settings → Plugins → Add plugin** dialog | **Only the identifier** (package name / URL / directory path) |
+| A Windows **terminal** (cmd / PowerShell) | The **full command** `dsh plugin --profile desktop add <identifier>` |
+
+> 🔴 **The most common mistake**: pasting the whole `dsh plugin --profile desktop add https://...`
+> line into the dialog. You get
+> **"无法识别这个包名或地址: not a package name the registry accepts"**.
+> The dialog must **not** include the leading `dsh plugin --profile desktop add`.
+
+---
+
 ### Option 1: No git required (recommended)
 
-Install the pre-packed file from the release:
+**① In the dialog, paste only this line:**
+
+```
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+```
+
+**② Or run this in a terminal:**
 
 ```cmd
 dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
 ```
 
-You can paste **that URL** into DSH's **Settings → Plugins → Add plugin** dialog instead.
-
-> ✅ **This path does not need `git`.** It downloads a release asset directly — measured at ~2 seconds.
+> ✅ **This path does not need `git`** — it downloads a release asset (measured at ~2 seconds).
 > **If `git` is not installed on your machine, use this one.**
 
 ### Option 2: Install from the GitHub repository (requires git)
+
+**① In the dialog, paste:**
+
+```
+github:yi-yezhiqiu/dsh-prompt-market
+```
+
+(`https://github.com/yi-yezhiqiu/dsh-prompt-market` works too)
+
+**② Or run this in a terminal:**
 
 ```cmd
 dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 ```
 
-The repository URL works too:
-
-```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
-```
-
-> ⚠️ **Both forms require `git` to be installed** — pnpm shells out to it to fetch the repository.
+> ⚠️ **This form requires `git` to be installed** — pnpm shells out to it to fetch the repository.
 > Without it you get:
 >
 > ```
@@ -205,7 +229,7 @@ dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-marke
 > 'git' is not recognized as an internal or external command
 > ```
 >
-> **If you hit that, use Option 1**, or install git first (`winget install Git.Git`).
+> **If you hit that, switch to Option 1**, or install git first (`winget install Git.Git`).
 
 ### Option 3: Install from a local directory
 

@@ -171,32 +171,55 @@ flowchart TD
 - DeepSeek Harness デスクトップ版
 - プラグインの**実行時に Node は不要**（Node が必要になるのは開発用セルフチェックを回すときだけです）
 
+### ⚠️ まず区別してください：**ダイアログ**に入力するのか、**ターミナル**で実行するのか
+
+この 2 つでは**入れる内容が違います**：
+
+| どこで | 何を入れるか |
+|---|---|
+| DSH の「**設定 → プラグイン → プラグインを追加**」ダイアログ | **識別子だけ**（パッケージ名 / URL / ディレクトリのパス） |
+| Windows の**ターミナル**（cmd / PowerShell） | **コマンド全体** `dsh plugin --profile desktop add <識別子>` |
+
+> 🔴 **いちばん多い間違い**：`dsh plugin --profile desktop add https://...` の**行ごと**ダイアログに貼り付けてしまう。
+> そうすると **「无法识别这个包名或地址: not a package name the registry accepts」** と出ます。
+> ダイアログには先頭の `dsh plugin --profile desktop add` は**入れません**。
+
+---
+
 ### 方法 1：git 不要（推奨）
 
-リリースに添付した梱包済みファイルを直接インストールします：
+**① ダイアログには、この 1 行だけを貼り付けます：**
+
+```
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+```
+
+**② あるいはターミナルで実行します：**
 
 ```cmd
 dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
 ```
 
-**この URL** を DSH の**設定 → プラグイン → プラグインを追加**ダイアログに貼り付けてもかまいません。
-
-> ✅ **この方法に `git` は不要です。** リリース添付ファイルを直接ダウンロードします（実測 約 2 秒）。
+> ✅ **この方法に `git` は不要です** —— リリース添付ファイルを直接ダウンロードします（実測 約 2 秒）。
 > **お使いの環境に git が入っていない場合はこちらを使ってください。**
 
 ### 方法 2：GitHub リポジトリからインストール（git が必要）
+
+**① ダイアログに入れるもの：**
+
+```
+github:yi-yezhiqiu/dsh-prompt-market
+```
+
+（`https://github.com/yi-yezhiqiu/dsh-prompt-market` でも構いません）
+
+**② あるいはターミナルで実行します：**
 
 ```cmd
 dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 ```
 
-リポジトリの URL でも構いません：
-
-```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
-```
-
-> ⚠️ **どちらの書き方も `git` のインストールが前提です** —— pnpm が git を呼び出してリポジトリを取得するためです。
+> ⚠️ **この書き方は `git` のインストールが前提です** —— pnpm が git を呼び出してリポジトリを取得するためです。
 > 入っていないと次のように失敗します：
 >
 > ```
@@ -204,7 +227,7 @@ dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-marke
 > 'git' は、内部コマンドまたは外部コマンド、操作可能なプログラムまたはバッチ ファイルとして認識されていません。
 > ```
 >
-> **このエラーが出たら「方法 1」を使ってください。** あるいは先に git を導入してください（`winget install Git.Git`）。
+> **このエラーが出たら「方法 1」に切り替えてください。** あるいは先に git を導入してください（`winget install Git.Git`）。
 
 ### 方法 3：ローカルディレクトリからインストール
 

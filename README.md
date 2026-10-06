@@ -172,32 +172,55 @@ flowchart TD
 - DeepSeek Harness 桌面端
 - 插件**运行时不依赖 Node**（Node 只在跑开发自检时需要）
 
+### ⚠️ 先分清：你在**对话框**里填，还是在**终端**里跑
+
+这两种地方要填的内容**不一样**：
+
+| 你在哪 | 填 / 跑什么 |
+|---|---|
+| DSH 的「**设置 → 插件 → 添加插件**」对话框 | **只填标识符本身**（包名 / 网址 / 目录路径） |
+| Windows **终端**（cmd / PowerShell） | 跑**完整命令** `dsh plugin --profile desktop add <标识符>` |
+
+> 🔴 **最常见的错误**：把整条 `dsh plugin --profile desktop add https://...` 粘进对话框 ——
+> 会报 **「无法识别这个包名或地址：not a package name the registry accepts」**。
+> 对话框里**不要**那一截 `dsh plugin --profile desktop add`。
+
+---
+
 ### 方式一：不用 git（推荐）
 
-直接装发布包里打好的文件：
+**① 对话框里，只填这一行：**
+
+```
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+```
+
+**② 或者在终端里跑：**
 
 ```cmd
 dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
 ```
 
-也可以把**这个网址**填进 DSH 的**设置 → 插件 → 添加插件**对话框。
-
-> ✅ **这条不需要 `git`。** 它直接下载 Release 附件，实测 2 秒装完。
-> **如果你机器上没装 git，就用这条。**
+> ✅ **这条不需要 `git`** —— 它直接下载 Release 附件（实测 2 秒装完）。
+> **如果你机器上没装 git，用这条。**
 
 ### 方式二：从 GitHub 仓库安装（需要 git）
+
+**① 对话框里填：**
+
+```
+github:yi-yezhiqiu/dsh-prompt-market
+```
+
+（写成 `https://github.com/yi-yezhiqiu/dsh-prompt-market` 也可以）
+
+**② 或者在终端里跑：**
 
 ```cmd
 dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 ```
 
-仓库地址写法同样可用：
-
-```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market
-```
-
-> ⚠️ **这两种写法都要求本机已安装 `git`** —— pnpm 要靠它拉取仓库。
+> ⚠️ **这种方式要求本机已安装 `git`** —— pnpm 要靠它拉取仓库。
 > 没装的话会失败，报错形如：
 >
 > ```
@@ -205,7 +228,7 @@ dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-marke
 > 'git' 不是内部或外部命令，也不是可运行的程序或批处理文件。
 > ```
 >
-> **遇到这个就用「方式一」**，或者先装 git（`winget install Git.Git`）。
+> **遇到这个就改用「方式一」**，或者先装 git（`winget install Git.Git`）。
 
 ### 方式三：本地目录安装
 

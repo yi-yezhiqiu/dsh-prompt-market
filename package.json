@@ -12,16 +12,23 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "index.js",
+    "./index.js",
     "client.js",
     "cordis.patch.yml",
-    "README.md"
+    "README.md",
+    "lib"
   ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.7.0",
   "keywords": [
     "dsh",
     "dsh-plugin",
     "prompt-market",
-    "prompts"
+    "prompt-library",
+    "prompts",
+    "prompt-manager"
   ],
   "license": "MIT",
   "repository": {

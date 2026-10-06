@@ -19,16 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
---------------------------------------------------------------------------------
-NOTE ON THE COPYRIGHT HOLDER
-
-The holder line reads "dsh-prompt-market contributors" deliberately: the
-project ships no personal data. If you are the maintainer and prefer your own
-name or organisation, replace that single line — it does not affect the
-third-party obligations below, which are fulfilled independently in
-THIRD-PARTY-NOTICES.md.
-
-This licence covers the plugin's own source code only. The prompt data the
-plugin fetches at runtime belongs to its upstream projects and is governed by
-their licences (see THIRD-PARTY-NOTICES.md).

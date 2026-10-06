@@ -6,6 +6,41 @@
 
 ## [未发布]
 
+### 已通过官方插件检查（`dsh-plugin-dev check`）
+
+生态里有一套官方规范与检查工具（`dsh-plugin-guide` 提供的 `dsh-plugin-dev` CLI）。
+本插件此前**从未对照它检查过**。首次实跑结果：`6 passed / 2 failed / 2 warned`。
+逐条修复后：
+
+```
+result: OK (9 passed, 0 failed, 1 warned, 5 skipped)
+```
+
+| 检查项 | 修复前 | 修复 |
+|---|---|---|
+| `manifest-engines` | ✗ 缺 `engines.node` | 加 `"node": "^22.19.0 || >=24.0.0"`（检查器要求同时覆盖 Node 22 与 24） |
+| `manifest-files` | ✗ `files` 白名单不完整 | ① 主入口字符串须与 `main` **完全一致** ⇒ 改为 `"./index.js"`；② 检查器要求列出构建产物目录（`lib`/`dist`）⇒ 加入真实存在的 `lib` |
+| `manifest-package-manager` | ! 未固定 | 加 `"packageManager": "pnpm@11.7.0"` |
+| `readme-five-langs` | ! 五语 README 不全 | **有意不追**（见下） |
+| `manifest-peers` | ✓ | 本插件不 import `@deepseek-ai/*`，peer deps 可选 |
+
+> **关于 `lib` 与「构建产物目录」**：本插件**没有构建步骤**（`client.js` 即产物，位于包根）。
+> 检查器那条规则的意图是"确保构建产物进了包"，对本插件不适用。
+> 加 `lib` 只是因为该目录**真实存在且本就随包分发**（`lib/write-draft.js`，诊断用），
+> **不是**为了伪装出构建步骤。
+>
+> **关于五语 README**：官方约定 README + `README-zh` / `README-es` / `README-pt` / `README-hi`。
+> 本插件目前提供**中 / 英 / 日**三份**人工撰写**的文档。
+> 我们**不打算**为了消掉一个 warning 而加入无法校对的机器翻译 —— 这与本项目「不写没验证过的东西」的取向一致。
+> 该 warning 保留。
+
+### 修复（可发现性，2026-10-06）
+
+| 问题 | 影响 | 修复 |
+|---|---|---|
+| GitHub 仓库 **`topics` 为空** | 社区发现机制靠 GitHub 的 `dsh-plugin` topic（**17773 个仓库**在用）；空 topic ＝ **完全隐身** | 已通过 API 设置 10 个 topic（`dsh-plugin` / `deepseek-harness` / `dsh` / `prompt` / `prompt-library` / `prompts` / `prompt-manager` / `chinese` / `no-build` / `plugin`） |
+| `LICENSE` 里 MIT 正文后**附了一段说明** | GitHub 许可识别退化为 **`NOASSERTION`**，别人无法一眼确认许可；也会影响 `license` 徽章 | `LICENSE` 改为**纯 MIT 全文**；那段说明移入 `THIRD-PARTY-NOTICES.md`（并写明"必须保持纯正文"的原因） |
+
 ### 已验证（由**第三方机器**，而非维护者本机）
 
 - **从 GitHub 安装（方式一：Release 附件）** —— 另一位用户在其**自己的机器**上安装成功。

@@ -335,8 +335,13 @@ var __pmCore = globalThis.__pmCore || (globalThis.__pmCore = {});
     CACHE_MAX_BYTES_PER_SOURCE: 900 * 1024,
     /* 全部源缓存的合计上限，超限按 fetchedAt 最旧者先淘汰 */
     CACHE_MAX_BYTES_TOTAL: 2 * 1024 * 1024,
-    /* 远程响应体上限（防止 8 MB 级文件把编辑器拖死；Q3/Q4 已决定避开） */
-    RESPONSE_MAX_BYTES: 4 * 1024 * 1024,
+    /* 远程响应体上限。
+       ⚠️ 运行期实测修正（2026-10-06）：内置英文源 f/prompts.chat 的 prompts.csv
+       响应体实际 **5769655 字节**，而原上限 4 MB 会把整包丢弃 ⇒ 该源**一条都读不出来**
+       （用户界面显示「prompts-chat-csv E_PARSE 响应体实际 5769655 字节，超过上限 4194304 字节」）。
+       原注释里「避开 8 MB 级文件」的假设由此被推翻：内置源本身就有 5.5 MB 级文件。
+       现放宽到 12 MB，为上游继续增长留出余量；内存与解析开销经评估可接受。 */
+    RESPONSE_MAX_BYTES: 12 * 1024 * 1024,
     /* 单条正文字符上限（防上游超长条目） */
     CONTENT_MAX_CHARS: 20000,
     /* 标题长度上限 */

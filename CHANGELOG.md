@@ -29,6 +29,30 @@ GitHub 的 `v0.1.1` 发行附件是**当时那份内容**的快照（不含后�
 `packageManager` / `lib` 等）。而 **npm 同一个版本号只能发布一次，发上去就永久固定**。
 为保持「npm 0.1.2 == GitHub v0.1.2 == 仓库当前内容」三者一致，另起 0.1.2。
 
+### 验证（本机实跑，非推断）
+
+```
+$ pnpm add dsh-prompt-market        (registry = registry.npmjs.org)
++ dsh-prompt-market 0.1.2          exit=0
+```
+
+| 检查 | 结果 |
+|---|---|
+| 装进来的文件 | `client.js` / `cordis.patch.yml` / `index.js` / `LICENSE` / `package.json` / `README.md` / `lib/write-draft.js`（**7 个，与 `fileCount` 一致**） |
+| 四个导出说明符（含 `./client`） | **全部解析成功** |
+| 装到的 `client.js` sha256 | `1EE0F0E6…` —— **与仓库产物完全一致** |
+| npm 页面 | <https://www.npmjs.com/package/dsh-prompt-market>（`_npmUser = yiye_zhiqiu`） |
+
+> ⚠️ **发布后有一段读副本延迟**：`GET /dsh-prompt-market` 先返回 404、约 15 秒后 200，
+> 而 **tarball 本体比元数据晚数分钟才可下载**（其间 `pnpm add` 会报
+> `ERR_PNPM_FETCH_404`）。这不是发布失败，重试即可。
+
+### 配套
+
+- GitHub Release **`v0.1.2`** + `.tgz` 附件（`100028` 字节，
+  SHA-256 `321C7634C41F91129FE46910577E367EE0AE1993FDF4088725392016F2D4E9BC`）
+- 三份 README 的安装章节改为以 **npm 一行命令**开头；版本徽章加 npm 徽章
+
 ---
 
 ## [未发布]

@@ -7,7 +7,8 @@
 対話欄からワンクリックでプロンプトを閲覧・検索・お気に入り登録 —— 選んだ内容がそのまま入力欄に入ります
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.2-green.svg)](CHANGELOG.md)
+[![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#インストール)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#ビルド手順が不要な理由)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#データとプライバシー)
@@ -186,24 +187,47 @@ flowchart TD
 
 ---
 
-### 方法 1：git 不要（推奨）
+### 方法 1：コマンド 1 行（推奨、npm に公開済み）
 
-**① ダイアログには、この 1 行だけを貼り付けます：**
+**① ダイアログには、この 1 行だけを入力します：**
 
 ```
-https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+dsh-prompt-market
 ```
 
 **② あるいはターミナルで実行します：**
 
 ```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+dsh plugin --profile desktop add dsh-prompt-market
 ```
 
-> ✅ **この方法に `git` は不要です** —— リリース添付ファイルを直接ダウンロードします（実測 約 2 秒）。
-> **お使いの環境に git が入っていない場合はこちらを使ってください。**
+> ✅ **`git` は不要**で、URL を覚える必要もありません。
+> npm に公開済みです：<https://www.npmjs.com/package/dsh-prompt-market>
+>
+> 🌏 **ネットワークが制限されている場合**：「プラグインを追加」ダイアログで「インストール元」を
+> **中国大陸のミラー**（npmmirror）に切り替えれば、国内ミラーからインストールできます。
+>
+> 💡 万一 npm でインストールできない場合（オフライン、ブロック、registry 到達不可）は、
+> 下記の**方法 2**（Release 添付ファイルの直リンク）に切り替えてください。
 
-### 方法 2：GitHub リポジトリからインストール（git が必要）
+### 方法 2：Release 添付ファイルの直リンク（git 不要、フォールバック）
+
+**① ダイアログに入れるもの：**
+
+```
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+```
+
+**② あるいはターミナルで実行します：**
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+```
+
+> ✅ **この方法も `git` に依存しません** —— Release の添付ファイルを直接ダウンロードします（実測数秒）。
+> 完全にオフライン、または registry が通らない状況に適しています。
+
+### 方法 3：GitHub リポジトリからインストール（git が必要）
 
 **① ダイアログに入れるもの：**
 
@@ -227,9 +251,9 @@ dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 > 'git' は、内部コマンドまたは外部コマンド、操作可能なプログラムまたはバッチ ファイルとして認識されていません。
 > ```
 >
-> **このエラーが出たら「方法 1」に切り替えてください。** あるいは先に git を導入してください（`winget install Git.Git`）。
+> **このエラーが出たら「方法 1」または「方法 2」に切り替えてください。** あるいは先に git を導入してください（`winget install Git.Git`）。
 
-### 方法 3：ローカルディレクトリからインストール
+### 方法 4：ローカルディレクトリからインストール
 
 先にクローン（またはリポジトリの ZIP をダウンロードして展開）し、そのディレクトリを指定します：
 
@@ -244,7 +268,7 @@ dsh plugin --profile desktop add "<クローンしたディレクトリ>"
 "<DSH のインストール先>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<ディレクトリ>"
 ```
 
-### 方法 4：シンボリックリンク（開発者向け）
+### 方法 5：シンボリックリンク（開発者向け）
 
 ```cmd
 mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<リポジトリのパス>"

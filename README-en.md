@@ -7,7 +7,8 @@
 Browse, search, and bookmark prompts from the chat box — pick one and it goes straight into your input box
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.2-green.svg)](CHANGELOG.md)
+[![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#installation)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#why-there-is-no-build-step)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#data--privacy)
@@ -188,24 +189,47 @@ The two take **different things**:
 
 ---
 
-### Option 1: No git required (recommended)
+### Option 1: One-line command (recommended, published to npm)
 
-**① In the dialog, paste only this line:**
+**① In the dialog, enter only this line:**
 
 ```
-https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+dsh-prompt-market
 ```
 
 **② Or run this in a terminal:**
 
 ```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.1/dsh-prompt-market-0.1.1.tgz
+dsh plugin --profile desktop add dsh-prompt-market
 ```
 
-> ✅ **This path does not need `git`** — it downloads a release asset (measured at ~2 seconds).
-> **If `git` is not installed on your machine, use this one.**
+> ✅ **No `git` needed**, and no URL to remember.
+> Published on npm: <https://www.npmjs.com/package/dsh-prompt-market>
+>
+> 🌏 **On a restricted network**: in the "Add plugin" dialog, set the **install source** (「安装源」) to the
+> **Chinese mainland mirror** (npmmirror), and it will install from the domestic mirror.
+>
+> 💡 If npm cannot install it (offline, blocked, registry unreachable),
+> switch to **Option 2** below (direct release-asset link).
 
-### Option 2: Install from the GitHub repository (requires git)
+### Option 2: Direct release-asset link (no git needed, fallback)
+
+**① In the dialog, paste:**
+
+```
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+```
+
+**② Or run this in a terminal:**
+
+```cmd
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+```
+
+> ✅ **This one does not depend on `git` either** — it downloads the release asset directly (measured at a few seconds).
+> Good for fully offline setups or when the registry is unreachable.
+
+### Option 3: Install from the GitHub repository (requires git)
 
 **① In the dialog, paste:**
 
@@ -229,9 +253,9 @@ dsh plugin --profile desktop add github:yi-yezhiqiu/dsh-prompt-market
 > 'git' is not recognized as an internal or external command
 > ```
 >
-> **If you hit that, switch to Option 1**, or install git first (`winget install Git.Git`).
+> **If you hit that, switch to Option 1 or Option 2**, or install git first (`winget install Git.Git`).
 
-### Option 3: Install from a local directory
+### Option 4: Install from a local directory
 
 Clone first (or download and unzip the repository), then install that directory:
 
@@ -246,7 +270,7 @@ If `dsh` isn't on your PATH, use the shim inside the DSH installation directory:
 "<DSH install dir>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "<directory>"
 ```
 
-### Option 4: Symlink (developers)
+### Option 5: Symlink (developers)
 
 ```cmd
 mklink /D "<DSH profile>\node_modules\dsh-prompt-market" "<repository path>"

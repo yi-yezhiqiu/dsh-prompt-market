@@ -4,87 +4,6 @@
 
 ---
 
-## [0.1.3] — 2026-10-07
-
-**文档修正版。**
-
-0.1.2 是**先发布、后改文档**。而 **npm 页面渲染的正是「发布那一刻 tarball 里的 README.md」**
-—— 于是 npm 页面上的安装说明是旧的：徽章写着 `0.1.1`，方式一还在教人「去下载 v0.1.1 的附件」。
-**在 npm 页面上劝人别用 npm**，这属于文档与实际不一致，必须修。
-
-### 变更
-
-- 三份 README 的**安装章节随包分发**（npm 页面现在显示的是**以 npm 一行命令为首选**的版本）
-- **下载直链改为永久地址**：
-  `https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz`
-  —— 资产文件名**不再带版本号**，`latest` 由 GitHub 在请求时解析
-  ⇒ **以后发版不必再改三份 README**。
-  （`awesome-dsh-plugin/contributing.md` 也警告过这个坑：资产名带版本号时，
-  `latest/download/` 会把文件名当字面量，链接迟早失效。本项目自己踩过一次。）
-- 版本徽章 `0.1.2` → `0.1.3`
-
-### 值得记下的教训
-
-> **npm 上的 README 是发布那一刻的快照，不会随后续提交更新。**
->
-> 所以「**先改文档、再发版**」的顺序不能颠倒 —— 0.1.2 就是反着做的：
-> 包发出去了，README 才改成「以 npm 为首选」，结果 npm 页面上躺着的是上一版说明。
->
-> 这也意味着：**任何会出现在 npm 页面上的文档改动，都需要一个新版本才能真正生效。**
-
----
-
-## [0.1.2] — 2026-10-07
-
-**发布到 npm。** 现在可以用最短的一条命令安装：
-
-```cmd
-dsh plugin --profile desktop add dsh-prompt-market
-```
-
-（这也让 DSH「添加插件」对话框里的**中国大陆镜像源**生效 —— 国内用户不必再走 GitHub。）
-
-### 变更
-
-- 去掉 `"private": true` —— npm 拒绝发布私有包
-- 新增 **`publishConfig`**：把发布目标**钉死在 `registry.npmjs.org`**。
-  本机 `.npmrc` 配的是 `registry.npmmirror.com`（**只读镜像**），没有这道保险，
-  `pnpm publish` 会朝镜像源发请求。**这是实测出来的坑，不是推测。**
-- `.gitignore` 增加 `.npmrc` —— 防止发布 token 被误提交
-- 新增 `screenshots.json`（供插件市场如 `dsh-market` 在详情页展示截图）
-
-### 为什么另起 0.1.2，而不是把 0.1.1 发上去
-
-GitHub 的 `v0.1.1` 发行附件是**当时那份内容**的快照（不含后来补的 `engines` /
-`packageManager` / `lib` 等）。而 **npm 同一个版本号只能发布一次，发上去就永久固定**。
-为保持「npm 0.1.2 == GitHub v0.1.2 == 仓库当前内容」三者一致，另起 0.1.2。
-
-### 验证（本机实跑，非推断）
-
-```
-$ pnpm add dsh-prompt-market        (registry = registry.npmjs.org)
-+ dsh-prompt-market 0.1.2          exit=0
-```
-
-| 检查 | 结果 |
-|---|---|
-| 装进来的文件 | `client.js` / `cordis.patch.yml` / `index.js` / `LICENSE` / `package.json` / `README.md` / `lib/write-draft.js`（**7 个，与 `fileCount` 一致**） |
-| 四个导出说明符（含 `./client`） | **全部解析成功** |
-| 装到的 `client.js` sha256 | `1EE0F0E6…` —— **与仓库产物完全一致** |
-| npm 页面 | <https://www.npmjs.com/package/dsh-prompt-market>（`_npmUser = yiye_zhiqiu`） |
-
-> ⚠️ **发布后有一段读副本延迟**：`GET /dsh-prompt-market` 先返回 404、约 15 秒后 200，
-> 而 **tarball 本体比元数据晚数分钟才可下载**（其间 `pnpm add` 会报
-> `ERR_PNPM_FETCH_404`）。这不是发布失败，重试即可。
-
-### 配套
-
-- GitHub Release **`v0.1.2`** + `.tgz` 附件（`100028` 字节，
-  SHA-256 `321C7634C41F91129FE46910577E367EE0AE1993FDF4088725392016F2D4E9BC`）
-- 三份 README 的安装章节改为以 **npm 一行命令**开头；版本徽章加 npm 徽章
-
----
-
 ## [未发布]
 
 ### 官方端到端验证（`dsh-plugin-dev verify`）—— 已跑，并查清失败归属
@@ -100,6 +19,10 @@ $ pnpm add dsh-prompt-market        (registry = registry.npmjs.org)
 
 **该失败与插件无关，已用对照实验证明**：换成一个 **`apply` 为空的插件**跑同一套 verify，
 失败步骤、报错文字、suggestions **逐字相同**。
+
+也在**完全退出桌面端**（含托盘进程，`tasklist` 查不到 `DeepSeek Harness.exe`）的条件下重跑过 ——
+结果**完全相同**，故「运行中的桌面端占用传输通道」这一假设**已排除**。
+TLS 中间人、工作目录、继承的环境变量亦已逐项排除（清单见 [`docs/OFFICIAL-VERIFY.md`](docs/OFFICIAL-VERIFY.md)）。
 
 同时定位到两个**工具侧**问题（均非本插件）：
 
@@ -180,6 +103,86 @@ result: OK (9 passed, 0 failed, 1 warned, 5 skipped)
 
 ---
 
+## [0.1.3] — 2026-10-07
+
+**文档修正版。**
+
+0.1.2 是**先发布、后改文档**。而 **npm 页面渲染的正是「发布那一刻 tarball 里的 README.md」**
+—— 于是 npm 页面上的安装说明是旧的：徽章写着 `0.1.1`，方式一还在教人「去下载 v0.1.1 的附件」。
+**在 npm 页面上劝人别用 npm**，这属于文档与实际不一致，必须修。
+
+### 变更
+
+- 三份 README 的**安装章节随包分发**（npm 页面现在显示的是**以 npm 一行命令为首选**的版本）
+- **下载直链改为永久地址**：
+  `https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz`
+  —— 资产文件名**不再带版本号**，`latest` 由 GitHub 在请求时解析
+  ⇒ **以后发版不必再改三份 README**。
+  （`awesome-dsh-plugin/contributing.md` 也警告过这个坑：资产名带版本号时，
+  `latest/download/` 会把文件名当字面量，链接迟早失效。本项目自己踩过一次。）
+- 版本徽章 `0.1.2` → `0.1.3`
+
+### 值得记下的教训
+
+> **npm 上的 README 是发布那一刻的快照，不会随后续提交更新。**
+>
+> 所以「**先改文档、再发版**」的顺序不能颠倒 —— 0.1.2 就是反着做的：
+> 包发出去了，README 才改成「以 npm 为首选」，结果 npm 页面上躺着的是上一版说明。
+>
+> 这也意味着：**任何会出现在 npm 页面上的文档改动，都需要一个新版本才能真正生效。**
+
+---
+
+## [0.1.2] — 2026-10-07
+
+**发布到 npm。** 现在可以用最短的一条命令安装：
+
+```cmd
+dsh plugin --profile desktop add dsh-prompt-market
+```
+
+（这也让 DSH「添加插件」对话框里的**中国大陆镜像源**生效 —— 国内用户不必再走 GitHub。）
+
+### 变更
+
+- 去掉 `"private": true` —— npm 拒绝发布私有包
+- 新增 **`publishConfig`**：把发布目标**钉死在 `registry.npmjs.org`**。
+  本机 `.npmrc` 配的是 `registry.npmmirror.com`（**只读镜像**），没有这道保险，
+  `pnpm publish` 会朝镜像源发请求。**这是实测出来的坑，不是推测。**
+- `.gitignore` 增加 `.npmrc` —— 防止发布 token 被误提交
+- 新增 `screenshots.json`（供插件市场如 `dsh-market` 在详情页展示截图）
+
+### 为什么另起 0.1.2，而不是把 0.1.1 发上去
+
+GitHub 的 `v0.1.1` 发行附件是**当时那份内容**的快照（不含后来补的 `engines` /
+`packageManager` / `lib` 等）。而 **npm 同一个版本号只能发布一次，发上去就永久固定**。
+为保持「npm 0.1.2 == GitHub v0.1.2 == 仓库当前内容」三者一致，另起 0.1.2。
+
+### 验证（本机实跑，非推断）
+
+```
+$ pnpm add dsh-prompt-market        (registry = registry.npmjs.org)
++ dsh-prompt-market 0.1.2          exit=0
+```
+
+| 检查 | 结果 |
+|---|---|
+| 装进来的文件 | `client.js` / `cordis.patch.yml` / `index.js` / `LICENSE` / `package.json` / `README.md` / `lib/write-draft.js`（**7 个，与 `fileCount` 一致**） |
+| 四个导出说明符（含 `./client`） | **全部解析成功** |
+| 装到的 `client.js` sha256 | `1EE0F0E6…` —— **与仓库产物完全一致** |
+| npm 页面 | <https://www.npmjs.com/package/dsh-prompt-market>（`_npmUser = yiye_zhiqiu`） |
+
+> ⚠️ **发布后有一段读副本延迟**：`GET /dsh-prompt-market` 先返回 404、约 15 秒后 200，
+> 而 **tarball 本体比元数据晚数分钟才可下载**（其间 `pnpm add` 会报
+> `ERR_PNPM_FETCH_404`）。这不是发布失败，重试即可。
+
+### 配套
+
+- GitHub Release **`v0.1.2`** + `.tgz` 附件（`100028` 字节，
+  SHA-256 `321C7634C41F91129FE46910577E367EE0AE1993FDF4088725392016F2D4E9BC`）
+- 三份 README 的安装章节改为以 **npm 一行命令**开头；版本徽章加 npm 徽章
+
+---
 ## [0.1.1] — 2026-10-06
 
 **修复「无法从 GitHub 安装」的布局问题。** 如果你只想装插件，用这个版本（或更新的）。

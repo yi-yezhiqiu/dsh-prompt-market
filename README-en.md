@@ -7,7 +7,7 @@
 Browse, search, and bookmark prompts from the chat box — pick one and it goes straight into your input box
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.2-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.3-green.svg)](CHANGELOG.md)
 [![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#installation)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#why-there-is-no-build-step)
@@ -217,17 +217,20 @@ dsh plugin --profile desktop add dsh-prompt-market
 **① In the dialog, paste:**
 
 ```
-https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz
 ```
 
 **② Or run this in a terminal:**
 
 ```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz
 ```
 
 > ✅ **This one does not depend on `git` either** — it downloads the release asset directly (measured at a few seconds).
 > Good for fully offline setups or when the registry is unreachable.
+>
+> 📌 The `latest` in that URL is resolved by GitHub at request time and **always points at the newest release**,
+> so this link stays valid.
 
 ### Option 3: Install from the GitHub repository (requires git)
 

@@ -7,7 +7,7 @@
 在对话框里一键浏览、搜索、收藏提示词 —— 选中即写入输入框
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.2-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.3-green.svg)](CHANGELOG.md)
 [![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#安装)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#为什么可以没有构建步骤)
@@ -216,17 +216,19 @@ dsh plugin --profile desktop add dsh-prompt-market
 **① 对话框里填：**
 
 ```
-https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz
 ```
 
 **② 或者在终端里跑：**
 
 ```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz
 ```
 
 > ✅ **这条也不依赖 `git`** —— 它直接下载 Release 附件（实测数秒）。
 > 适合完全离线或 registry 不通的场景。
+>
+> 📌 网址里的 `latest` 由 GitHub 在请求时解析，**始终指向最新版本**，所以这个链接长期有效。
 
 ### 方式三：从 GitHub 仓库安装（需要 git）
 

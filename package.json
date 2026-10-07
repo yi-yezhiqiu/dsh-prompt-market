@@ -1,6 +1,6 @@
 {
   "name": "dsh-prompt-market",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "description": "提示词市场（Prompt Market）— DeepSeek Harness 桌面端插件：输入框旁「提示词导入」按钮 + 浮层市场面板；零后端、纯 JavaScript、无编译步骤。",
   "main": "./index.js",

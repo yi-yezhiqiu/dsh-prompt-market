@@ -7,7 +7,7 @@
 対話欄からワンクリックでプロンプトを閲覧・検索・お気に入り登録 —— 選んだ内容がそのまま入力欄に入ります
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.2-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.3-green.svg)](CHANGELOG.md)
 [![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#インストール)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#ビルド手順が不要な理由)
@@ -215,17 +215,20 @@ dsh plugin --profile desktop add dsh-prompt-market
 **① ダイアログに入れるもの：**
 
 ```
-https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz
 ```
 
 **② あるいはターミナルで実行します：**
 
 ```cmd
-dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/download/v0.1.2/dsh-prompt-market-0.1.2.tgz
+dsh plugin --profile desktop add https://github.com/yi-yezhiqiu/dsh-prompt-market/releases/latest/download/dsh-prompt-market.tgz
 ```
 
 > ✅ **この方法も `git` に依存しません** —— Release の添付ファイルを直接ダウンロードします（実測数秒）。
 > 完全にオフライン、または registry が通らない状況に適しています。
+>
+> 📌 URL 内の `latest` は GitHub がリクエスト時に解決し、**常に最新リリースを指します**。
+> したがってこのリンクは長期的に有効です。
 
 ### 方法 3：GitHub リポジトリからインストール（git が必要）
 

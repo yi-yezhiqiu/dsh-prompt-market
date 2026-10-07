@@ -24,6 +24,11 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-error.log*
 
+# npm/pnpm credentials — NEVER commit these.
+# A .npmrc in the project root is how a publish token would leak into the repo.
+.npmrc
+.npmrc.*
+
 # Generated packaging output
 dist/
 

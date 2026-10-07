@@ -4,6 +4,33 @@
 
 ---
 
+## [0.1.2] — 2026-10-07
+
+**发布到 npm。** 现在可以用最短的一条命令安装：
+
+```cmd
+dsh plugin --profile desktop add dsh-prompt-market
+```
+
+（这也让 DSH「添加插件」对话框里的**中国大陆镜像源**生效 —— 国内用户不必再走 GitHub。）
+
+### 变更
+
+- 去掉 `"private": true` —— npm 拒绝发布私有包
+- 新增 **`publishConfig`**：把发布目标**钉死在 `registry.npmjs.org`**。
+  本机 `.npmrc` 配的是 `registry.npmmirror.com`（**只读镜像**），没有这道保险，
+  `pnpm publish` 会朝镜像源发请求。**这是实测出来的坑，不是推测。**
+- `.gitignore` 增加 `.npmrc` —— 防止发布 token 被误提交
+- 新增 `screenshots.json`（供插件市场如 `dsh-market` 在详情页展示截图）
+
+### 为什么另起 0.1.2，而不是把 0.1.1 发上去
+
+GitHub 的 `v0.1.1` 发行附件是**当时那份内容**的快照（不含后来补的 `engines` /
+`packageManager` / `lib` 等）。而 **npm 同一个版本号只能发布一次，发上去就永久固定**。
+为保持「npm 0.1.2 == GitHub v0.1.2 == 仓库当前内容」三者一致，另起 0.1.2。
+
+---
+
 ## [未发布]
 
 ### 已通过官方插件检查（`dsh-plugin-dev check`）

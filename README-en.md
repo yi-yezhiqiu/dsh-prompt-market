@@ -534,6 +534,27 @@ Package installability (`pack.ps1` / `verify-package.ps1` exit code 0) · All st
 >
 > **The maintainer's own machine passing ≠ other people being able to install it.** This note stays here to remind whoever comes next.
 
+#### 🧪 Official end-to-end verification (`dsh-plugin-dev verify`): run, and the failure was traced
+
+On DSH `0.2.0-rc.2` we ran the official CLI's end-to-end verification
+(pack → install into a **throwaway** profile → a real headless turn → uninstall):
+
+| Step | Result |
+|---|---|
+| `pack` | ✅ |
+| `install` | ✅ `dsh-base` + `dsh-headless` + this plugin, all into a **clean** profile |
+| `dump-config` | ✅ the plugin's package name appears in the config dump |
+| `headless-smoke` | ❌ `TRANSPORT: DeepSeek Messages transport failed` |
+
+**This failure is not the plugin's fault**: running the exact same flow against a
+**control plugin whose `apply` does nothing** fails at the same step with
+**word-for-word identical** output and suggestions.
+We also identified two **tool-side** issues: `--base` / `--headless` are hardcoded to
+`0.1.7-rc.2` (rejected on 0.2.x), and the smoke's acceptance test does not cover
+`TRANSPORT` — so that step really measures **model API reachability**.
+
+Full record (with reproduction steps): [`docs/OFFICIAL-VERIFY.md`](docs/OFFICIAL-VERIFY.md)
+
 ### 🟨 Not runtime-verified (design is sound, but there is no runtime evidence)
 
 Offline fallback · Bookmarks and custom prompts persisting across restarts · Content filtering actually firing on real Chinese entries at runtime ·

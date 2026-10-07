@@ -87,6 +87,29 @@ $ pnpm add dsh-prompt-market        (registry = registry.npmjs.org)
 
 ## [未发布]
 
+### 官方端到端验证（`dsh-plugin-dev verify`）—— 已跑，并查清失败归属
+
+在 DSH `0.2.0-rc.2` 上跑了官方 CLI 的 `verify`（打包 → 装进一次性 profile → 冒烟 → 卸载）：
+
+| 步骤 | 结果 |
+|---|---|
+| `pack` | ✅ |
+| `install` | ✅（`dsh-base` + `dsh-headless` + 本插件，一次装进全新 profile） |
+| `dump-config` | ✅（配置转储中出现本插件包名） |
+| `headless-smoke` | ❌ `TRANSPORT: DeepSeek Messages transport failed` |
+
+**该失败与插件无关，已用对照实验证明**：换成一个 **`apply` 为空的插件**跑同一套 verify，
+失败步骤、报错文字、suggestions **逐字相同**。
+
+同时定位到两个**工具侧**问题（均非本插件）：
+
+1. `--base` / `--headless` 默认钉死在 `0.1.7-rc.2`，在 DSH 0.2.x 上被直接拒绝
+   （需显式传同版本号，`verify-official.cmd` 已自动读 `dsh --version` 处理）
+2. 冒烟的接受条件（`MISSING_CREDENTIAL` 或独立的 `ok`）**不覆盖 `TRANSPORT`**，
+   于是这一步在「有可用凭证」的机器上实际验的是**模型 API 可达性**，而非插件树能否加载
+
+完整记录（含复现方式与原始输出）：[`docs/OFFICIAL-VERIFY.md`](docs/OFFICIAL-VERIFY.md)
+
 ### 已通过官方插件检查（`dsh-plugin-dev check`）
 
 生态里有一套官方规范与检查工具（`dsh-plugin-guide` 提供的 `dsh-plugin-dev` CLI）。

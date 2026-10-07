@@ -533,6 +533,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ui/check-ui.ps1
 >
 > **维护者本机自测通过 ≠ 别人能装上。** 这条记录保留在此，提醒后来者。
 
+#### 🧪 官方端到端验证（`dsh-plugin-dev verify`）：已跑，失败归属已查清
+
+在 DSH `0.2.0-rc.2` 上跑了官方 CLI 的端到端验证
+（打包 → 装进**一次性** profile → 真实 headless 回合 → 卸载）：
+
+| 步骤 | 结果 |
+|---|---|
+| `pack` | ✅ |
+| `install` | ✅ 一次装 `dsh-base` + `dsh-headless` + 本插件进**全新** profile |
+| `dump-config` | ✅ 配置转储中出现本插件包名 |
+| `headless-smoke` | ❌ `TRANSPORT: DeepSeek Messages transport failed` |
+
+**该失败与插件无关**：换成一个 **`apply` 为空的对照插件**跑同一套流程，
+失败步骤、报错文字、suggestions **逐字相同**。
+同时定位到两个**工具侧**问题：`--base` / `--headless` 默认钉死在 `0.1.7-rc.2`（在 0.2.x 上被拒）；
+冒烟的接受条件不覆盖 `TRANSPORT`，于是这一步实际验的是**模型 API 可达性**。
+
+完整记录（含复现方式）：[`docs/OFFICIAL-VERIFY.md`](docs/OFFICIAL-VERIFY.md)
+
 ### 🟨 未实测（设计正确，但未取得运行期证据）
 
 断网降级 · 重启后收藏与自建持久化 · 内容过滤对真实中文条目的运行期生效 · 条件「替换」动作

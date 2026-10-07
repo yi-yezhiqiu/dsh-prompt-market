@@ -6,6 +6,25 @@
 
 ## [未发布]
 
+### 被 dshfind.com 收录
+
+[`dshfind.com`](https://dshfind.com)（DSH 插件超市 + 学习社区，中/英/日/韩四语）
+**每天同步 GitHub `dsh-plugin` topic**。本仓库 2026-10-06 加上该 topic 后，
+在 **2026-10-07 的同步轮次被收录**：
+
+- 详情页：<https://dshfind.com/zh/plugins/yi-yezhiqiu/dsh-prompt-market>
+- 它自动读到并展示：Star 数、语言、**版本 `0.1.3`**、以及 npm 安装命令（标注「按包信息推导」）
+- 三份 README 的徽章区加入 **dshfind 徽章**（内容为 `dshfind | ★ N`，链接回详情页）
+
+**评分 ≠ 收录。** dshfind 的评分（S/A/B/C）只发给 **「✨优质项目」（编辑推荐）** ——
+那个标记由维护者用 `scripts/flag-plugin.mjs --featured=1` **人工**打，
+而评分批处理（`collect-score-evidence.mjs`）的默认查询正是 `WHERE is_featured = 1`。
+**收录是自动的，推荐是人工的，没有申请入口。**
+
+> ⚠️ 核对时踩过一次：详情页上同时渲染着**推荐位里其他插件**的评分徽章，
+> 我一度把 `A / 71`（属于 `@bradeGithub` 的条目）当成了本插件的分数。
+> **抓页面时必须把字段与所有者配对**，否则会得出错误结论 —— 记此备忘。
+
 ### 官方端到端验证（`dsh-plugin-dev verify`）—— 已跑，并查清失败归属
 
 在 DSH `0.2.0-rc.2` 上跑了官方 CLI 的 `verify`（打包 → 装进一次性 profile → 冒烟 → 卸载）：

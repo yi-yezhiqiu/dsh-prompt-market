@@ -9,6 +9,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.3-green.svg)](CHANGELOG.md)
 [![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
+[![dshfind](https://dshfind.com/api/badge/yi-yezhiqiu/dsh-prompt-market?lang=zh)](https://dshfind.com/zh/plugins/yi-yezhiqiu/dsh-prompt-market?ref=badge)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#安装)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#为什么可以没有构建步骤)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#数据与隐私)

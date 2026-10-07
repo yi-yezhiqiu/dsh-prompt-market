@@ -9,6 +9,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.3-green.svg)](CHANGELOG.md)
 [![npm](https://img.shields.io/npm/v/dsh-prompt-market.svg)](https://www.npmjs.com/package/dsh-prompt-market)
+[![dshfind](https://dshfind.com/api/badge/yi-yezhiqiu/dsh-prompt-market?lang=ja)](https://dshfind.com/ja/plugins/yi-yezhiqiu/dsh-prompt-market?ref=badge)
 [![Platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-6f42c1.svg)](#インストール)
 [![No Build](https://img.shields.io/badge/build-none%20required-success.svg)](#ビルド手順が不要な理由)
 [![Zero Backend](https://img.shields.io/badge/backend-none-critical.svg)](#データとプライバシー)

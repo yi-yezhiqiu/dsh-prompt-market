@@ -6,6 +6,35 @@
 
 ## [未发布]
 
+### 通过 dsh.so 的 L5 运行验证（独立第三方）
+
+[`dsh.so`](https://www.dsh.so/)（非官方 DSH 插件市场 · 独立社区，库内 16,962 个插件）
+有一套 **L1–L5 验证阶梯**，其中 L4/L5 是**真沙盒安装 + 运行冒烟**。本插件的结果：
+
+| 维度 | 结论 |
+|---|---|
+| **验证** | **L5 · 运行已测 · 通过**（最高档） |
+| 风险 | **低风险** |
+| 健康 | 活跃 |
+| 信任 | **金** |
+| 安全 | `DSH.SO VET PASSED` · clean（0 严重 / 0 高 / 0 中） |
+
+验证环境：Node v24.14.0 · **DSH 0.2.0-rc.2** · 工件 `npm dsh-prompt-market@0.1.3`。
+
+它记录的证据链（每条带 ID 与采集时间）：
+L4.1 受限沙盒内执行安装（Windows ACL 沙盒，**退出码 0**，6.3 秒）→ L5.2 Web 启动就绪 →
+L5.3 HTTP 服务响应（`/` → 200）→ **L5.4 插件清单中已激活**
+（清单 150 条，命中 `include:prompt-market` / `dsh-prompt-market` / **相位 `active`**）。
+
+> **这一条特别有意义**：它的 L5 运行验证是在 **`dsh 0.2.0-rc.2`** 上做的 ——
+> **正是官方 `dsh-plugin-dev verify` 的冒烟步骤在本机失败的那个版本**。
+> 独立第三方在更严格的档位上验证通过，进一步印证了
+> [`docs/OFFICIAL-VERIFY.md`](docs/OFFICIAL-VERIFY.md) 的结论：那是**工具/环境问题，不是插件问题**。
+
+三份 README 加入两枚 dsh.so 徽章：
+`dsh.so risk: low`（不绑版本）与
+`dsh.so install: runtime verified (L5) on dsh 0.2.0-rc.2`（绑 dsh 版本）。
+
 ### 被 dshfind.com 收录
 
 [`dshfind.com`](https://dshfind.com)（DSH 插件超市 + 学习社区，中/英/日/韩四语）
